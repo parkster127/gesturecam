@@ -1,0 +1,659 @@
+<!doctype html>
+<html class="dark" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>GestureCam - Settings</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#6467f2",
+              "background-light": "#f6f6f8",
+              "background-dark": "#101122",
+              surface: "#1E293B",
+            },
+            fontFamily: {
+              display: ["Inter"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+      .fill-1 {
+        font-variation-settings: "FILL" 1;
+      }
+      .settings-section {
+        background: rgba(15, 23, 42, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+    </style>
+  </head>
+  <body class="bg-background-dark font-display text-white overflow-hidden">
+    <div class="flex h-screen w-full flex-col">
+      <!-- Window Title Bar -->
+      <header
+        class="flex items-center justify-between border-b border-white/5 bg-[#0F172A] px-6 py-3 select-none"
+      >
+        <div class="flex items-center gap-3">
+          <button
+            class="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+          >
+            <span class="material-symbols-outlined">arrow_back</span>
+            <span class="text-sm font-medium">Back to Dashboard</span>
+          </button>
+        </div>
+        <h1 class="text-sm font-bold tracking-tight">Settings</h1>
+        <div class="flex gap-1">
+          <button
+            class="flex size-8 items-center justify-center rounded hover:bg-white/10 transition-colors"
+          >
+            <span class="material-symbols-outlined text-lg">minimize</span>
+          </button>
+          <button
+            class="flex size-8 items-center justify-center rounded hover:bg-white/10 transition-colors"
+          >
+            <span class="material-symbols-outlined text-lg"
+              >check_box_outline_blank</span
+            >
+          </button>
+          <button
+            class="flex size-8 items-center justify-center rounded hover:bg-red-500/80 transition-colors"
+          >
+            <span class="material-symbols-outlined text-lg">close</span>
+          </button>
+        </div>
+      </header>
+
+      <main class="flex-1 overflow-y-auto p-8">
+        <div class="max-w-3xl mx-auto space-y-8">
+          <!-- Camera Section -->
+          <section class="settings-section rounded-2xl p-6 space-y-6">
+            <div class="flex items-center gap-3 pb-4 border-b border-white/5">
+              <div
+                class="size-10 rounded-xl bg-primary/20 flex items-center justify-center"
+              >
+                <span class="material-symbols-outlined text-primary"
+                  >videocam</span
+                >
+              </div>
+              <div>
+                <h2 class="font-bold text-lg">Camera</h2>
+                <p class="text-xs text-gray-500">
+                  Configure your video input device
+                </p>
+              </div>
+            </div>
+
+            <div class="space-y-5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <label class="text-sm font-medium text-white"
+                    >Camera Selection</label
+                  >
+                  <p class="text-xs text-gray-500">Select the webcam to use</p>
+                </div>
+                <div class="relative">
+                  <select
+                    class="bg-[#0F172A] border border-white/10 rounded-lg px-4 py-2.5 pr-10 text-sm font-medium appearance-none focus:ring-2 focus:ring-primary focus:border-primary min-w-[240px]"
+                  >
+                    <option>MacBook Pro Camera</option>
+                    <option>iPhone Continuity Camera</option>
+                    <option>Logitech StreamCam</option>
+                  </select>
+                  <span
+                    class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500 text-lg"
+                    >expand_more</span
+                  >
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between">
+                <div>
+                  <label class="text-sm font-medium text-white"
+                    >Resolution</label
+                  >
+                  <p class="text-xs text-gray-500">
+                    Video resolution for capture
+                  </p>
+                </div>
+                <div class="relative">
+                  <select
+                    class="bg-[#0F172A] border border-white/10 rounded-lg px-4 py-2.5 pr-10 text-sm font-medium appearance-none focus:ring-2 focus:ring-primary focus:border-primary min-w-[180px]"
+                  >
+                    <option>720p (HD)</option>
+                    <option selected>1080p (Full HD)</option>
+                    <option>1440p (2K)</option>
+                    <option>4K (Ultra HD)</option>
+                  </select>
+                  <span
+                    class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500 text-lg"
+                    >expand_more</span
+                  >
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between">
+                <div>
+                  <label class="text-sm font-medium text-white"
+                    >Mirror Image</label
+                  >
+                  <p class="text-xs text-gray-500">
+                    Flip video horizontally (selfie mode)
+                  </p>
+                </div>
+                <button
+                  class="relative w-12 h-7 bg-primary rounded-full transition-colors"
+                >
+                  <div
+                    class="absolute right-1 top-1 size-5 bg-white rounded-full shadow-lg transition-transform"
+                  ></div>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- Zoom Section -->
+          <section class="settings-section rounded-2xl p-6 space-y-6">
+            <div class="flex items-center gap-3 pb-4 border-b border-white/5">
+              <div
+                class="size-10 rounded-xl bg-cyan-500/20 flex items-center justify-center"
+              >
+                <span class="material-symbols-outlined text-cyan-400"
+                  >zoom_in</span
+                >
+              </div>
+              <div>
+                <h2 class="font-bold text-lg">Zoom</h2>
+                <p class="text-xs text-gray-500">
+                  Control zoom behavior and limits
+                </p>
+              </div>
+            </div>
+
+            <div class="space-y-6">
+              <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <label class="text-sm font-medium text-white"
+                    >Maximum Zoom</label
+                  >
+                  <span class="text-sm font-bold text-primary">3.0x</span>
+                </div>
+                <input
+                  type="range"
+                  min="1.5"
+                  max="5"
+                  step="0.5"
+                  value="3"
+                  class="w-full h-2 bg-white/10 rounded-full appearance-none cursor-pointer accent-primary"
+                />
+                <div class="flex justify-between text-xs text-gray-500">
+                  <span>1.5x</span>
+                  <span>5.0x</span>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <label class="text-sm font-medium text-white"
+                    >Smoothing</label
+                  >
+                  <span class="text-sm font-bold text-primary">Medium</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value="50"
+                  class="w-full h-2 bg-white/10 rounded-full appearance-none cursor-pointer accent-primary"
+                />
+                <div class="flex justify-between text-xs text-gray-500">
+                  <span>Instant</span>
+                  <span>Very Slow</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Framing Section -->
+          <section class="settings-section rounded-2xl p-6 space-y-6">
+            <div class="flex items-center gap-3 pb-4 border-b border-white/5">
+              <div
+                class="size-10 rounded-xl bg-emerald-500/20 flex items-center justify-center"
+              >
+                <span class="material-symbols-outlined text-emerald-400"
+                  >person_search</span
+                >
+              </div>
+              <div>
+                <h2 class="font-bold text-lg">Framing</h2>
+                <p class="text-xs text-gray-500">
+                  Auto-framing and face tracking options
+                </p>
+              </div>
+            </div>
+
+            <div class="space-y-5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <label class="text-sm font-medium text-white"
+                    >Default Mode</label
+                  >
+                  <p class="text-xs text-gray-500">
+                    Framing mode to use when app starts
+                  </p>
+                </div>
+                <div class="relative">
+                  <select
+                    class="bg-[#0F172A] border border-white/10 rounded-lg px-4 py-2.5 pr-10 text-sm font-medium appearance-none focus:ring-2 focus:ring-primary focus:border-primary min-w-[180px]"
+                  >
+                    <option>Manual</option>
+                    <option selected>Face Follow</option>
+                    <option>Headshot</option>
+                    <option>Shirt-Up</option>
+                  </select>
+                  <span
+                    class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500 text-lg"
+                    >expand_more</span
+                  >
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <label class="text-sm font-medium text-white"
+                    >Tracking Smoothness</label
+                  >
+                  <span class="text-sm font-bold text-primary">Smooth</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value="70"
+                  class="w-full h-2 bg-white/10 rounded-full appearance-none cursor-pointer accent-primary"
+                />
+              </div>
+            </div>
+          </section>
+
+          <!-- Gestures Section -->
+          <section class="settings-section rounded-2xl p-6 space-y-6">
+            <div class="flex items-center gap-3 pb-4 border-b border-white/5">
+              <div
+                class="size-10 rounded-xl bg-amber-500/20 flex items-center justify-center"
+              >
+                <span class="material-symbols-outlined text-amber-400"
+                  >front_hand</span
+                >
+              </div>
+              <div>
+                <h2 class="font-bold text-lg">Gestures</h2>
+                <p class="text-xs text-gray-500">
+                  Hand gesture recognition settings
+                </p>
+              </div>
+            </div>
+
+            <div class="space-y-5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <label class="text-sm font-medium text-white"
+                    >Enable Gestures</label
+                  >
+                  <p class="text-xs text-gray-500">
+                    Control zoom with hand gestures
+                  </p>
+                </div>
+                <button
+                  class="relative w-12 h-7 bg-primary rounded-full transition-colors"
+                >
+                  <div
+                    class="absolute right-1 top-1 size-5 bg-white rounded-full shadow-lg transition-transform"
+                  ></div>
+                </button>
+              </div>
+
+              <div class="flex items-center justify-between">
+                <div>
+                  <label class="text-sm font-medium text-white"
+                    >Two-Hand Control</label
+                  >
+                  <p class="text-xs text-gray-500">
+                    Use distance between two hands for zoom
+                  </p>
+                </div>
+                <button
+                  class="relative w-12 h-7 bg-primary rounded-full transition-colors"
+                >
+                  <div
+                    class="absolute right-1 top-1 size-5 bg-white rounded-full shadow-lg transition-transform"
+                  ></div>
+                </button>
+              </div>
+
+              <div class="flex items-center justify-between">
+                <div>
+                  <label class="text-sm font-medium text-white"
+                    >Show Detection Overlay</label
+                  >
+                  <p class="text-xs text-gray-500">
+                    Display hand landmarks on preview
+                  </p>
+                </div>
+                <button
+                  class="relative w-12 h-7 bg-white/20 rounded-full transition-colors"
+                >
+                  <div
+                    class="absolute left-1 top-1 size-5 bg-white/60 rounded-full shadow-lg transition-transform"
+                  ></div>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- Output Section -->
+          <section class="settings-section rounded-2xl p-6 space-y-6">
+            <div class="flex items-center gap-3 pb-4 border-b border-white/5">
+              <div
+                class="size-10 rounded-xl bg-purple-500/20 flex items-center justify-center"
+              >
+                <span class="material-symbols-outlined text-purple-400"
+                  >cast</span
+                >
+              </div>
+              <div>
+                <h2 class="font-bold text-lg">Output</h2>
+                <p class="text-xs text-gray-500">
+                  Virtual camera output settings
+                </p>
+              </div>
+            </div>
+
+            <div class="space-y-5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <label class="text-sm font-medium text-white"
+                    >Virtual Camera Backend</label
+                  >
+                  <p class="text-xs text-gray-500">
+                    Technology used for virtual camera
+                  </p>
+                </div>
+                <div class="relative">
+                  <select
+                    class="bg-[#0F172A] border border-white/10 rounded-lg px-4 py-2.5 pr-10 text-sm font-medium appearance-none focus:ring-2 focus:ring-primary focus:border-primary min-w-[180px]"
+                  >
+                    <option selected>OBS Virtual Camera</option>
+                    <option>v4l2loopback (Linux)</option>
+                  </select>
+                  <span
+                    class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500 text-lg"
+                    >expand_more</span
+                  >
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between">
+                <div>
+                  <label class="text-sm font-medium text-white"
+                    >Device Name</label
+                  >
+                  <p class="text-xs text-gray-500">
+                    Name shown in other applications
+                  </p>
+                </div>
+                <input
+                  type="text"
+                  value="GestureCam"
+                  class="bg-[#0F172A] border border-white/10 rounded-lg px-4 py-2.5 text-sm font-medium focus:ring-2 focus:ring-primary focus:border-primary min-w-[180px] text-right"
+                />
+              </div>
+            </div>
+          </section>
+
+          <!-- General Section -->
+          <section class="settings-section rounded-2xl p-6 space-y-6">
+            <div class="flex items-center gap-3 pb-4 border-b border-white/5">
+              <div
+                class="size-10 rounded-xl bg-gray-500/20 flex items-center justify-center"
+              >
+                <span class="material-symbols-outlined text-gray-400"
+                  >settings</span
+                >
+              </div>
+              <div>
+                <h2 class="font-bold text-lg">General</h2>
+                <p class="text-xs text-gray-500">Application preferences</p>
+              </div>
+            </div>
+
+            <div class="space-y-5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <label class="text-sm font-medium text-white">Language</label>
+                  <p class="text-xs text-gray-500">Application language</p>
+                </div>
+                <div class="relative">
+                  <select
+                    class="bg-[#0F172A] border border-white/10 rounded-lg px-4 py-2.5 pr-10 text-sm font-medium appearance-none focus:ring-2 focus:ring-primary focus:border-primary min-w-[150px]"
+                  >
+                    <option selected>English</option>
+                    <option>Español</option>
+                  </select>
+                  <span
+                    class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500 text-lg"
+                    >expand_more</span
+                  >
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between">
+                <div>
+                  <label class="text-sm font-medium text-white"
+                    >Start with System</label
+                  >
+                  <p class="text-xs text-gray-500">Launch when you log in</p>
+                </div>
+                <button
+                  class="relative w-12 h-7 bg-white/20 rounded-full transition-colors"
+                >
+                  <div
+                    class="absolute left-1 top-1 size-5 bg-white/60 rounded-full shadow-lg transition-transform"
+                  ></div>
+                </button>
+              </div>
+
+              <div class="flex items-center justify-between">
+                <div>
+                  <label class="text-sm font-medium text-white"
+                    >Minimize to Tray</label
+                  >
+                  <p class="text-xs text-gray-500">
+                    Keep running when window is closed
+                  </p>
+                </div>
+                <button
+                  class="relative w-12 h-7 bg-primary rounded-full transition-colors"
+                >
+                  <div
+                    class="absolute right-1 top-1 size-5 bg-white rounded-full shadow-lg transition-transform"
+                  ></div>
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <!-- Footer Actions -->
+      <footer
+        class="bg-[#0F172A] border-t border-white/5 px-8 py-4 flex items-center justify-between"
+      >
+        <button
+          class="px-6 py-2.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 font-medium flex items-center gap-2 transition-colors"
+        >
+          <span class="material-symbols-outlined text-lg">restart_alt</span>
+          Reset to Defaults
+        </button>
+        <div class="flex items-center gap-3">
+          <button
+            class="px-6 py-2.5 rounded-lg text-gray-400 hover:text-white font-medium transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            class="flex items-center gap-2 px-8 py-2.5 bg-primary hover:bg-primary/90 rounded-lg font-bold text-sm transition-all shadow-lg shadow-primary/20"
+          >
+            <span class="material-symbols-outlined text-lg">check</span>
+            Save Changes
+          </button>
+        </div>
+      </footer>
+    </div>
+
+    <script src="js/bridge.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Elements
+        const cameraSelect = document.querySelector(
+          "section:nth-of-type(1) select",
+        );
+        const resolutionSelect = document.querySelector(
+          "section:nth-of-type(1) .space-y-5 > div:nth-child(2) select",
+        );
+        const framingModeSelect = document.querySelector(
+          "section:nth-of-type(3) select",
+        );
+
+        // Back to Dashboard button
+        const backBtn = document.querySelector("header button");
+        if (backBtn) {
+          backBtn.addEventListener("click", () =>
+            GestureCam.navigateTo("dashboard"),
+          );
+        }
+
+        // Cancel button
+        const cancelBtn = document.querySelector(
+          "footer .text-gray-400.hover\\:text-white",
+        );
+        if (cancelBtn) {
+          cancelBtn.addEventListener("click", () =>
+            GestureCam.navigateTo("dashboard"),
+          );
+        }
+
+        // Save button
+        const saveBtn = document.querySelector("footer .bg-primary");
+        if (saveBtn) {
+          saveBtn.addEventListener("click", function () {
+            if (GestureCam.api) {
+              GestureCam.api.save_settings().then(() => {
+                GestureCam.navigateTo("dashboard");
+              });
+            } else {
+              GestureCam.navigateTo("dashboard");
+            }
+          });
+        }
+
+        // Reset button
+        const resetBtn = document.querySelector("footer button:first-of-type");
+        if (resetBtn && resetBtn !== saveBtn) {
+          resetBtn.addEventListener("click", function () {
+            if (GestureCam.api) {
+              GestureCam.api.reset_settings().then(() => {
+                window.location.reload();
+              });
+            }
+          });
+        }
+
+        // Load real data when ready
+        window.addEventListener("gesturecam:ready", function () {
+          // Load cameras
+          if (cameraSelect) {
+            GestureCam.getAvailableCameras().then((cameras) => {
+              cameraSelect.innerHTML = cameras
+                .map((cam) => {
+                  const info = cam.resolution ? ` (${cam.resolution})` : "";
+                  return `<option value="${cam.index}">${cam.name}${info}</option>`;
+                })
+                .join("");
+            });
+          }
+
+          // Load resolutions
+          if (resolutionSelect) {
+            GestureCam.getResolutions().then((resolutions) => {
+              resolutionSelect.innerHTML = resolutions
+                .map((res) => `<option value="${res.id}">${res.label}</option>`)
+                .join("");
+            });
+          }
+
+          // Load current settings
+          GestureCam.getSettings().then((settings) => {
+            // Set camera selection
+            if (cameraSelect && settings.camera) {
+              cameraSelect.value = settings.camera.deviceIndex;
+            }
+
+            // Set resolution
+            if (resolutionSelect && settings.camera) {
+              resolutionSelect.value = settings.camera.resolution;
+            }
+
+            // Set framing mode
+            if (framingModeSelect && settings.framing) {
+              const modeMap = {
+                manual: "Manual",
+                face_follow: "Face Follow",
+                headshot: "Headshot",
+                shirt_up: "Shirt-Up",
+              };
+              // Find and select the matching option
+              for (let opt of framingModeSelect.options) {
+                if (opt.text === modeMap[settings.framing.defaultMode]) {
+                  opt.selected = true;
+                  break;
+                }
+              }
+            }
+          });
+        });
+
+        // Initialize
+        GestureCam.init(function (api) {
+          GestureCam.setupWindowControls();
+        });
+      });
+    </script>
+  </body>
+</html>

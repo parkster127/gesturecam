@@ -1,0 +1,208 @@
+{
+  "app": {
+    "name": "GestureCam",
+    "tagline": "Control your camera with a simple 👍",
+    "version": "Version {version}"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "reset": "Reset",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "done": "Done",
+    "enable": "Enable",
+    "disable": "Disable",
+    "on": "On",
+    "off": "Off",
+    "yes": "Yes",
+    "no": "No",
+    "ok": "OK",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Information",
+    "success": "Success",
+    "loading": "Loading...",
+    "retry": "Retry"
+  },
+  "menu": {
+    "file": "File",
+    "edit": "Edit",
+    "view": "View",
+    "help": "Help",
+    "settings": "Settings",
+    "quit": "Quit",
+    "about": "About GestureCam",
+    "check_updates": "Check for Updates",
+    "documentation": "Documentation",
+    "report_bug": "Report a Bug"
+  },
+  "dashboard": {
+    "title": "GestureCam",
+    "preview": "Camera Preview",
+    "original": "ORIGINAL",
+    "processed": "PROCESSED + ZOOM",
+    "zoom_level": "Zoom: {level}x",
+    "mode": "Mode: {mode}",
+    "gesture": "Gesture: {gesture}",
+    "waiting_gesture": "Waiting for gesture...",
+    "mirror": "Mirror",
+    "framing_modes": "Framing Modes",
+    "latency": "Latency: {ms}ms",
+    "status": {
+      "active": "Active",
+      "paused": "Paused",
+      "error": "Error",
+      "no_camera": "No Camera",
+      "detecting": "Detecting camera...",
+      "connected": "Connected",
+      "disconnected": "Disconnected",
+      "permission_denied": "Permission denied"
+    },
+    "start_camera": "Start Virtual Camera",
+    "stop_camera": "Stop Virtual Camera"
+  },
+  "modes": {
+    "manual": "Manual",
+    "face_follow": "Face Follow",
+    "headshot": "Headshot",
+    "shirt_up": "Shirt-Up",
+    "manual_desc": "No automatic tracking. Full manual control.",
+    "face_follow_desc": "Camera smoothly follows your face.",
+    "headshot_desc": "Professional head framing for interviews.",
+    "shirt_up_desc": "Shows from chest up. Great for presentations."
+  },
+  "gestures": {
+    "title": "Gesture Control",
+    "guide_title": "Gesture Control Guide",
+    "zoom_in": "Zoom In",
+    "zoom_out": "Zoom Out",
+    "zoom_in_fast": "Zoom In Fast",
+    "zoom_out_fast": "Zoom Out Fast",
+    "hold": "Hold/Pause",
+    "neutral": "Neutral",
+    "none": "None detected",
+    "tips_title": "Tips for Best Performance",
+    "tip_lighting": "Make sure you have good lighting for accurate detection.",
+    "tip_visible": "Keep your hands visible within the camera frame and avoid sudden movements.",
+    "tip_practice": "Practice each gesture a few times to get used to the detection."
+  },
+  "settings": {
+    "title": "Settings",
+    "back_to_dashboard": "Back to Dashboard",
+    "save_changes": "Save Changes",
+    "camera": {
+      "title": "Camera",
+      "device": "Camera Selection",
+      "device_desc": "Select the webcam to use",
+      "resolution": "Resolution",
+      "resolution_desc": "Video resolution for capture",
+      "fps": "Frames Per Second (FPS)",
+      "mirror": "Mirror Image",
+      "mirror_desc": "Flip video horizontally (selfie mode)"
+    },
+    "zoom": {
+      "title": "Zoom",
+      "max_zoom": "Maximum Zoom",
+      "max_zoom_desc": "Maximum zoom level (1.0x - 5.0x)",
+      "smoothing": "Smoothing",
+      "smoothing_desc": "How smooth the zoom transition is (0 = instant, 1 = very slow)"
+    },
+    "framing": {
+      "title": "Framing",
+      "default_mode": "Default Mode",
+      "default_mode_desc": "Framing mode to use when app starts",
+      "smoothing": "Tracking Smoothness",
+      "smoothing_desc": "How smoothly the camera follows your face"
+    },
+    "gestures": {
+      "title": "Gestures",
+      "enabled": "Enable Gestures",
+      "enabled_desc": "Control zoom with hand gestures",
+      "two_hand": "Two-Hand Control",
+      "two_hand_desc": "Use distance between two hands for zoom",
+      "show_overlay": "Show Detection Overlay",
+      "show_overlay_desc": "Display hand landmarks on preview",
+      "sensitivity": "Sensitivity",
+      "sensitivity_desc": "How responsive the gesture detection is"
+    },
+    "output": {
+      "title": "Output",
+      "backend": "Virtual Camera Backend",
+      "backend_desc": "Technology used for virtual camera",
+      "device_name": "Device Name",
+      "device_name_desc": "Name shown in other applications"
+    },
+    "general": {
+      "title": "General",
+      "language": "Language",
+      "language_desc": "Application language",
+      "theme": "Theme",
+      "theme_desc": "Interface color scheme",
+      "theme_dark": "Dark",
+      "theme_light": "Light",
+      "theme_system": "System",
+      "start_minimized": "Start Minimized",
+      "start_minimized_desc": "Start app in system tray",
+      "start_with_system": "Start with System",
+      "start_with_system_desc": "Launch when you log in",
+      "minimize_to_tray": "Minimize to Tray",
+      "minimize_to_tray_desc": "Keep running when window is closed"
+    },
+    "reset_defaults": "Reset to Defaults",
+    "reset_confirm": "Are you sure you want to reset all settings to their default values?"
+  },
+  "onboarding": {
+    "privacy": {
+      "title": "Your Privacy Matters",
+      "subtitle": "GestureCam processes everything locally on your device.",
+      "bullet1": "100% Local Processing",
+      "bullet1_desc": "All video and gesture analysis happens on your device",
+      "bullet2": "No Cloud Upload",
+      "bullet2_desc": "Your camera feed is never sent to any server",
+      "bullet3": "No Data Collection",
+      "bullet3_desc": "We don't collect or store any personal data",
+      "agree_continue": "I Agree & Continue"
+    },
+    "camera": {
+      "title": "Camera Setup",
+      "subtitle": "Connect and configure your primary device",
+      "select_camera": "Select Camera Source",
+      "detecting": "Detecting cameras...",
+      "tip": "Ensure your face is well-lit for best gesture recognition.",
+      "confirm": "Confirm Device",
+      "refresh": "Don't see your camera? Refresh list"
+    },
+    "gestures": {
+      "title": "Gesture Control",
+      "subtitle": "Control zoom with simple hand gestures",
+      "back": "Back",
+      "finish": "Finish & Start Using"
+    },
+    "step_indicator": "Step {current} of {total}"
+  },
+  "tray": {
+    "show": "Show GestureCam",
+    "hide": "Hide",
+    "toggle_camera": "Toggle Virtual Camera",
+    "quit": "Quit"
+  },
+  "errors": {
+    "camera_not_found": "Camera not found. Please check the connection.",
+    "camera_in_use": "Camera is in use by another application.",
+    "virtual_cam_failed": "Failed to start virtual camera. Make sure OBS Virtual Camera is installed.",
+    "gesture_model_failed": "Failed to load gesture recognition model.",
+    "settings_save_failed": "Failed to save settings.",
+    "unknown": "An unexpected error occurred."
+  },
+  "about": {
+    "title": "About GestureCam",
+    "description": "Virtual camera with gesture control for zoom and auto-framing.",
+    "version": "Version {version}",
+    "copyright": "© 2026 Vectores. Open source under MIT License.",
+    "website": "Website",
+    "github": "GitHub",
+    "made_with": "Made with ❤️ by Vectores"
+  }
+}

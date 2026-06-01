@@ -1,0 +1,673 @@
+<!doctype html>
+<html class="dark" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>GestureCam Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- MediaPipe for gesture detection -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1675466862/camera_utils.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3.1675466124/drawing_utils.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#6467f2",
+              "background-dark": "#101122",
+              surface: "#1E293B",
+            },
+            fontFamily: { display: ["Inter"] },
+          },
+        },
+      };
+    </script>
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+      .fill-1 {
+        font-variation-settings: "FILL" 1;
+      }
+      .hud-glass {
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .mirrored {
+        transform: scaleX(-1);
+      }
+    </style>
+  </head>
+  <body class="bg-background-dark font-display text-white overflow-hidden">
+    <div class="flex h-screen w-full flex-col">
+      <!-- Header -->
+      <header
+        class="flex items-center justify-between border-b border-white/5 bg-[#0F172A] px-6 py-3 select-none"
+      >
+        <div class="flex items-center gap-3">
+          <div class="size-6 text-primary">
+            <svg
+              fill="none"
+              viewBox="0 0 48 48"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M13.8261 17.4264C16.7203 18.1174 20.2244 18.5217 24 18.5217C27.7756 18.5217 31.2797 18.1174 34.1739 17.4264C36.9144 16.7722 39.9967 15.2331 41.3563 14.1648L24.8486 40.6391C24.4571 41.267 23.5429 41.267 23.1514 40.6391L6.64374 14.1648C8.00331 15.2331 11.0856 16.7722 13.8261 17.4264Z"
+                fill="currentColor"
+              ></path>
+              <path
+                clip-rule="evenodd"
+                d="M39.998 12.236C39.9944 12.2537 39.9875 12.2845 39.9748 12.3294C39.9436 12.4399 39.8949 12.5741 39.8346 12.7175C39.8168 12.7597 39.7989 12.8007 39.7813 12.8398C38.5103 13.7113 35.9788 14.9393 33.7095 15.4811C30.9875 16.131 27.6413 16.5217 24 16.5217C20.3587 16.5217 17.0125 16.131 14.2905 15.4811C12.0012 14.9346 9.44505 13.6897 8.18538 12.8168C8.17384 12.7925 8.16216 12.767 8.15052 12.7408C8.09919 12.6249 8.05721 12.5114 8.02977 12.411C8.00356 12.3152 8.00039 12.2667 8.00004 12.2612C8.00004 12.261 8 12.2607 8.00004 12.2612C8.00004 12.2359 8.0104 11.9233 8.68485 11.3686C9.34546 10.8254 10.4222 10.2469 11.9291 9.72276C14.9242 8.68098 19.1919 8 24 8C28.8081 8 33.0758 8.68098 36.0709 9.72276C37.5778 10.2469 38.6545 10.8254 39.3151 11.3686C39.9006 11.8501 39.9857 12.1489 39.998 12.236ZM4.95178 15.2312L21.4543 41.6973C22.6288 43.5809 25.3712 43.5809 26.5457 41.6973L43.0534 15.223L43.104 15.137L41.3563 14.1648C43.104 15.137 43.104 15.137 43.104 15.137L43.1199 15.108C43.1276 15.094 43.1377 15.075 43.1497 15.053C43.1738 15.007 43.2062 14.945 43.244 14.87C43.319 14.721 43.4196 14.511 43.5217 14.268C43.6901 13.868 44 13.069 44 12.261C44 10.557 43.003 9.223 41.8558 8.279C40.6947 7.324 39.1354 6.554 37.385 5.945C33.8654 4.721 29.133 4 24 4C18.867 4 14.1346 4.721 10.615 5.945C8.86463 6.554 7.30529 7.324 6.14419 8.279C4.99695 9.223 4 10.557 4 12.261C4 13.128 4.29264 13.908 4.49321 14.361C4.60375 14.61 4.71348 14.82 4.79687 14.969C4.83898 15.044 4.87547 15.107 4.9035 15.153C4.91754 15.176 4.92954 15.196 4.93916 15.211L4.94662 15.223L4.95178 15.231ZM35.9868 18.996L24 38.22L12.0131 18.996C12.4661 19.139 12.9179 19.266 13.3617 19.372C16.4281 20.104 20.0901 20.522 24 20.522C27.9099 20.522 31.5719 20.104 34.6383 19.372C35.082 19.266 35.5339 19.139 35.9868 18.996Z"
+                fill="currentColor"
+                fill-rule="evenodd"
+              ></path>
+            </svg>
+          </div>
+          <h1 class="text-sm font-bold tracking-tight">GestureCam</h1>
+        </div>
+        <div class="flex gap-1">
+          <button
+            class="flex size-8 items-center justify-center rounded hover:bg-white/10 transition-colors"
+          >
+            <span class="material-symbols-outlined text-lg">minimize</span>
+          </button>
+          <button
+            class="flex size-8 items-center justify-center rounded hover:bg-white/10 transition-colors"
+          >
+            <span class="material-symbols-outlined text-lg"
+              >check_box_outline_blank</span
+            >
+          </button>
+          <button
+            class="flex size-8 items-center justify-center rounded hover:bg-red-500/80 transition-colors"
+          >
+            <span class="material-symbols-outlined text-lg">close</span>
+          </button>
+        </div>
+      </header>
+
+      <main
+        class="flex flex-1 flex-col items-center justify-center bg-surface p-6 gap-6 overflow-y-auto"
+      >
+        <!-- Split View: Original | Processed -->
+        <div class="w-full max-w-[1100px] flex gap-4">
+          <!-- Original Camera -->
+          <div
+            class="relative flex-1 aspect-video rounded-xl overflow-hidden bg-black shadow-xl ring-2 ring-white/10"
+          >
+            <video
+              id="cameraOriginal"
+              class="absolute inset-0 w-full h-full object-cover"
+              autoplay
+              playsinline
+              muted
+            ></video>
+            <div
+              class="absolute top-3 left-3 hud-glass px-2 py-1 rounded text-xs font-bold"
+            >
+              ORIGINAL
+            </div>
+            <button
+              id="mirrorBtn"
+              class="absolute top-3 right-3 hud-glass px-2 py-1 rounded flex items-center gap-1 hover:bg-white/20 transition-colors"
+            >
+              <span class="material-symbols-outlined text-sm">flip</span>
+              <span class="text-xs">Mirror</span>
+            </button>
+          </div>
+
+          <!-- Processed View with Zoom -->
+          <div
+            class="relative flex-1 aspect-video rounded-xl overflow-hidden bg-black shadow-xl ring-4 ring-primary/30"
+          >
+            <canvas
+              id="cameraProcessed"
+              class="absolute inset-0 w-full h-full"
+            ></canvas>
+            <div
+              class="absolute top-3 left-3 hud-glass px-2 py-1 rounded text-xs font-bold text-primary"
+            >
+              PROCESSED + ZOOM
+            </div>
+            <!-- Gesture Indicator -->
+            <div
+              id="gestureIndicator"
+              class="absolute top-3 right-3 hud-glass px-3 py-1.5 rounded-lg flex items-center gap-2 transition-opacity"
+            >
+              <span
+                id="gestureIcon"
+                class="text-primary material-symbols-outlined fill-1"
+                >front_hand</span
+              >
+              <span id="gestureText" class="text-xs font-bold"
+                >Waiting for gesture...</span
+              >
+            </div>
+            <!-- Zoom Level -->
+            <div
+              class="absolute bottom-3 right-3 hud-glass px-3 py-1.5 rounded-lg flex items-center gap-2"
+            >
+              <span class="material-symbols-outlined text-sm text-gray-400"
+                >zoom_in</span
+              >
+              <span id="zoomLevel" class="text-lg font-bold text-primary"
+                >1.0x</span
+              >
+            </div>
+            <!-- Mode Label -->
+            <div
+              class="absolute bottom-3 left-1/2 -translate-x-1/2 hud-glass px-4 py-1.5 rounded-full"
+            >
+              <span
+                id="modeLabel"
+                class="text-[10px] font-black tracking-[0.2em]"
+                >FACE FOLLOW ACTIVE</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Framing Mode Selection -->
+        <div class="w-full max-w-[1100px] space-y-3">
+          <h3
+            class="text-sm font-semibold text-gray-400 uppercase tracking-widest px-1"
+          >
+            Framing Modes
+          </h3>
+          <div class="grid grid-cols-4 gap-3">
+            <label class="relative cursor-pointer group">
+              <input
+                type="radio"
+                name="mode"
+                value="manual"
+                class="peer sr-only"
+              />
+              <div
+                class="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white/5 border-2 border-transparent peer-checked:border-primary peer-checked:bg-primary/10 hover:bg-white/10 transition-all"
+              >
+                <span
+                  class="material-symbols-outlined text-2xl text-gray-500 group-hover:text-gray-300 transition-colors peer-checked:text-primary"
+                  >pan_tool</span
+                >
+                <span
+                  class="text-sm font-bold text-gray-400 peer-checked:text-white"
+                  >Manual</span
+                >
+              </div>
+            </label>
+            <label class="relative cursor-pointer group">
+              <input
+                type="radio"
+                name="mode"
+                value="face-follow"
+                class="peer sr-only"
+                checked
+              />
+              <div
+                class="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white/5 border-2 border-transparent peer-checked:border-primary peer-checked:bg-primary/10 hover:bg-white/10 transition-all"
+              >
+                <span
+                  class="material-symbols-outlined text-2xl text-gray-500 group-hover:text-gray-300 transition-colors peer-checked:text-primary"
+                  >face</span
+                >
+                <span
+                  class="text-sm font-bold text-gray-400 peer-checked:text-white"
+                  >Face Follow</span
+                >
+              </div>
+            </label>
+            <label class="relative cursor-pointer group">
+              <input
+                type="radio"
+                name="mode"
+                value="headshot"
+                class="peer sr-only"
+              />
+              <div
+                class="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white/5 border-2 border-transparent peer-checked:border-primary peer-checked:bg-primary/10 hover:bg-white/10 transition-all"
+              >
+                <span
+                  class="material-symbols-outlined text-2xl text-gray-500 group-hover:text-gray-300 transition-colors peer-checked:text-primary"
+                  >portrait</span
+                >
+                <span
+                  class="text-sm font-bold text-gray-400 peer-checked:text-white"
+                  >Headshot</span
+                >
+              </div>
+            </label>
+            <label class="relative cursor-pointer group">
+              <input
+                type="radio"
+                name="mode"
+                value="shirt-up"
+                class="peer sr-only"
+              />
+              <div
+                class="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white/5 border-2 border-transparent peer-checked:border-primary peer-checked:bg-primary/10 hover:bg-white/10 transition-all"
+              >
+                <span
+                  class="material-symbols-outlined text-2xl text-gray-500 group-hover:text-gray-300 transition-colors peer-checked:text-primary"
+                  >aspect_ratio</span
+                >
+                <span
+                  class="text-sm font-bold text-gray-400 peer-checked:text-white"
+                  >Shirt-Up</span
+                >
+              </div>
+            </label>
+          </div>
+        </div>
+      </main>
+
+      <!-- Footer Status Bar -->
+      <footer
+        class="bg-[#0F172A] border-t border-white/5 px-8 py-4 flex items-center justify-between"
+      >
+        <div class="flex items-center gap-6">
+          <div class="flex items-center gap-2">
+            <div id="statusDot" class="size-2 rounded-full bg-gray-500"></div>
+            <span id="statusText" class="text-xs font-medium text-gray-400"
+              >Detecting camera...</span
+            >
+          </div>
+          <div class="h-4 w-px bg-white/10"></div>
+          <div class="flex items-center gap-2 text-gray-400">
+            <span class="material-symbols-outlined text-sm">bolt</span>
+            <span id="latencyText" class="text-xs font-medium">--ms</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <button
+            id="settingsBtn"
+            class="flex items-center justify-center p-2 rounded-lg text-gray-400 hover:bg-white/5 transition-colors"
+          >
+            <span class="material-symbols-outlined">settings</span>
+          </button>
+          <button
+            id="startCameraBtn"
+            class="flex items-center gap-3 px-6 py-2.5 bg-primary hover:bg-primary/90 rounded-lg font-bold text-sm transition-all shadow-lg shadow-primary/20"
+          >
+            <span class="material-symbols-outlined text-lg fill-1"
+              >videocam</span
+            >
+            Start Virtual Camera
+          </button>
+        </div>
+      </footer>
+    </div>
+
+    <script src="js/bridge.js"></script>
+    <script>
+      // Dashboard with split view, mirror, and gesture detection
+      document.addEventListener("DOMContentLoaded", function () {
+        // Elements
+        const videoOriginal = document.getElementById("cameraOriginal");
+        const canvasProcessed = document.getElementById("cameraProcessed");
+        const ctx = canvasProcessed.getContext("2d");
+        const mirrorBtn = document.getElementById("mirrorBtn");
+        const gestureIndicator = document.getElementById("gestureIndicator");
+        const gestureIcon = document.getElementById("gestureIcon");
+        const gestureText = document.getElementById("gestureText");
+        const zoomLevel = document.getElementById("zoomLevel");
+        const modeLabel = document.getElementById("modeLabel");
+        const statusDot = document.getElementById("statusDot");
+        const statusText = document.getElementById("statusText");
+        const latencyText = document.getElementById("latencyText");
+        const startCameraBtn = document.getElementById("startCameraBtn");
+        const settingsBtn = document.getElementById("settingsBtn");
+        const modeRadios = document.querySelectorAll('input[name="mode"]');
+
+        let stream = null;
+        let isMirrored = true; // Default to mirrored (selfie mode)
+        let currentZoom = 1.0;
+        let targetZoom = 1.0;
+        const ZOOM_SMOOTHING = 0.1;
+        const MIN_ZOOM = 1.0;
+        const MAX_ZOOM = 3.0;
+
+        // MediaPipe Hands for gesture detection
+        let hands = null;
+        let lastGesture = "none";
+        let gestureStartTime = 0;
+        const GESTURE_HOLD_MS = 300; // Time to hold gesture before action
+
+        // Initialize MediaPipe Hands
+        function initMediaPipe() {
+          if (typeof Hands === "undefined") {
+            console.warn("MediaPipe not loaded, using keyboard controls only");
+            return;
+          }
+
+          hands = new Hands({
+            locateFile: (file) =>
+              `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
+          });
+
+          hands.setOptions({
+            maxNumHands: 1,
+            modelComplexity: 0, // Faster
+            minDetectionConfidence: 0.6,
+            minTrackingConfidence: 0.5,
+          });
+
+          hands.onResults(onHandResults);
+          console.log("MediaPipe Hands initialized");
+        }
+
+        // Process hand detection results
+        function onHandResults(results) {
+          if (
+            results.multiHandLandmarks &&
+            results.multiHandLandmarks.length > 0
+          ) {
+            const landmarks = results.multiHandLandmarks[0];
+            const gesture = detectGesture(landmarks);
+
+            if (gesture !== "none") {
+              if (gesture === lastGesture) {
+                // Check if held long enough
+                if (Date.now() - gestureStartTime > GESTURE_HOLD_MS) {
+                  applyGestureZoom(gesture);
+                  gestureStartTime = Date.now() + 500; // Cooldown
+                }
+              } else {
+                lastGesture = gesture;
+                gestureStartTime = Date.now();
+              }
+            } else {
+              lastGesture = "none";
+            }
+          } else {
+            lastGesture = "none";
+          }
+        }
+
+        // Detect gesture from hand landmarks
+        function detectGesture(landmarks) {
+          // Finger tip and pip indices
+          const THUMB_TIP = 4,
+            THUMB_IP = 3;
+          const INDEX_TIP = 8,
+            INDEX_PIP = 6;
+          const MIDDLE_TIP = 12,
+            MIDDLE_PIP = 10;
+          const RING_TIP = 16,
+            RING_PIP = 14;
+          const PINKY_TIP = 20,
+            PINKY_PIP = 18;
+          const WRIST = 0;
+
+          // Check if thumb is extended (up or down)
+          const thumbUp = landmarks[THUMB_TIP].y < landmarks[THUMB_IP].y - 0.05;
+          const thumbDown =
+            landmarks[THUMB_TIP].y > landmarks[THUMB_IP].y + 0.05;
+
+          // Check if other fingers are closed
+          const indexClosed = landmarks[INDEX_TIP].y > landmarks[INDEX_PIP].y;
+          const middleClosed =
+            landmarks[MIDDLE_TIP].y > landmarks[MIDDLE_PIP].y;
+          const ringClosed = landmarks[RING_TIP].y > landmarks[RING_PIP].y;
+          const pinkyClosed = landmarks[PINKY_TIP].y > landmarks[PINKY_PIP].y;
+
+          const fingersClosed =
+            indexClosed && middleClosed && ringClosed && pinkyClosed;
+
+          // Thumbs up: thumb pointing up, other fingers closed
+          if (thumbUp && fingersClosed) {
+            return "thumbs_up";
+          }
+
+          // Thumbs down: thumb pointing down, other fingers closed
+          if (thumbDown && fingersClosed) {
+            return "thumbs_down";
+          }
+
+          // Open palm: all fingers extended
+          const indexOpen = landmarks[INDEX_TIP].y < landmarks[INDEX_PIP].y;
+          const middleOpen = landmarks[MIDDLE_TIP].y < landmarks[MIDDLE_PIP].y;
+          const ringOpen = landmarks[RING_TIP].y < landmarks[RING_PIP].y;
+          const pinkyOpen = landmarks[PINKY_TIP].y < landmarks[PINKY_PIP].y;
+
+          if (indexOpen && middleOpen && ringOpen && pinkyOpen) {
+            return "open_palm";
+          }
+
+          return "none";
+        }
+
+        // Apply zoom based on gesture
+        function applyGestureZoom(gesture) {
+          if (gesture === "thumbs_up") {
+            targetZoom = Math.min(MAX_ZOOM, targetZoom + 0.15);
+            showGesture("thumb_up", "Zoom In 👍");
+          } else if (gesture === "thumbs_down") {
+            targetZoom = Math.max(MIN_ZOOM, targetZoom - 0.15);
+            showGesture("thumb_down", "Zoom Out 👎");
+          } else if (gesture === "open_palm") {
+            // Hold - do nothing but show indicator
+            showGesture("front_hand", "Hold 🖐️");
+          }
+        }
+
+        // Start camera
+        async function startCamera() {
+          try {
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            const cameras = devices.filter((d) => d.kind === "videoinput");
+
+            stream = await navigator.mediaDevices.getUserMedia({
+              video: {
+                width: { ideal: 1280 },
+                height: { ideal: 720 },
+                facingMode: "user",
+              },
+              audio: false,
+            });
+
+            videoOriginal.srcObject = stream;
+            await videoOriginal.play();
+
+            // Apply mirror by default
+            if (isMirrored) {
+              videoOriginal.classList.add("mirrored");
+            }
+
+            // Get camera name
+            const track = stream.getVideoTracks()[0];
+            const cameraName = track.label || "Camera";
+            statusText.textContent = `Camera: ${cameraName}`;
+            statusDot.classList.remove("bg-gray-500", "bg-red-500");
+            statusDot.classList.add("bg-emerald-500");
+
+            // Setup canvas
+            canvasProcessed.width = videoOriginal.videoWidth || 1280;
+            canvasProcessed.height = videoOriginal.videoHeight || 720;
+
+            // Initialize MediaPipe and start detection loop
+            initMediaPipe();
+            if (hands) {
+              setInterval(async () => {
+                if (videoOriginal.readyState >= 2) {
+                  await hands.send({ image: videoOriginal });
+                }
+              }, 100); // 10 FPS for gesture detection
+            }
+
+            // Start render loop
+            requestAnimationFrame(renderLoop);
+          } catch (err) {
+            console.error("Camera error:", err);
+            statusText.textContent =
+              "Camera: " + (err.message || "Permission denied");
+            statusDot.classList.replace("bg-gray-500", "bg-red-500");
+          }
+        }
+
+        // Render loop - applies zoom to processed view
+        function renderLoop() {
+          if (!videoOriginal.srcObject) return;
+
+          // Smooth zoom transition
+          currentZoom += (targetZoom - currentZoom) * ZOOM_SMOOTHING;
+
+          const vw = videoOriginal.videoWidth;
+          const vh = videoOriginal.videoHeight;
+
+          if (vw && vh) {
+            canvasProcessed.width = vw;
+            canvasProcessed.height = vh;
+
+            // Calculate zoom crop region
+            const zoomedWidth = vw / currentZoom;
+            const zoomedHeight = vh / currentZoom;
+            const sx = (vw - zoomedWidth) / 2;
+            const sy = (vh - zoomedHeight) / 2;
+
+            // Clear and draw
+            ctx.clearRect(0, 0, vw, vh);
+
+            // Apply mirror if enabled
+            if (isMirrored) {
+              ctx.save();
+              ctx.scale(-1, 1);
+              ctx.drawImage(
+                videoOriginal,
+                sx,
+                sy,
+                zoomedWidth,
+                zoomedHeight,
+                -vw,
+                0,
+                vw,
+                vh,
+              );
+              ctx.restore();
+            } else {
+              ctx.drawImage(
+                videoOriginal,
+                sx,
+                sy,
+                zoomedWidth,
+                zoomedHeight,
+                0,
+                0,
+                vw,
+                vh,
+              );
+            }
+          }
+
+          // Update zoom display
+          zoomLevel.textContent = currentZoom.toFixed(1) + "x";
+
+          // Simulate latency
+          const latency = Math.floor(8 + Math.random() * 6);
+          latencyText.textContent = latency + "ms";
+
+          requestAnimationFrame(renderLoop);
+        }
+
+        // Mirror toggle
+        mirrorBtn.addEventListener("click", () => {
+          isMirrored = !isMirrored;
+          videoOriginal.classList.toggle("mirrored", isMirrored);
+          mirrorBtn.classList.toggle("bg-primary/30", isMirrored);
+        });
+
+        // Keyboard controls for zoom (for testing)
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "ArrowUp" || e.key === "+" || e.key === "=") {
+            targetZoom = Math.min(MAX_ZOOM, targetZoom + 0.2);
+            showGesture("thumb_up", "Zoom In");
+          } else if (e.key === "ArrowDown" || e.key === "-") {
+            targetZoom = Math.max(MIN_ZOOM, targetZoom - 0.2);
+            showGesture("thumb_down", "Zoom Out");
+          } else if (e.key === "0") {
+            targetZoom = 1.0;
+            showGesture("restart_alt", "Reset Zoom");
+          }
+        });
+
+        // Show gesture indicator
+        function showGesture(icon, text) {
+          gestureIcon.textContent = icon;
+          gestureText.textContent = text;
+          gestureIndicator.style.opacity = "1";
+
+          // Sync with API
+          if (GestureCam.api) {
+            if (icon === "thumb_up") {
+              GestureCam.api.zoom_in();
+            } else if (icon === "thumb_down") {
+              GestureCam.api.zoom_out();
+            } else if (icon === "restart_alt") {
+              GestureCam.api.reset_zoom();
+            }
+          }
+
+          clearTimeout(window.gestureTimeout);
+          window.gestureTimeout = setTimeout(() => {
+            gestureIndicator.style.opacity = "0.5";
+            gestureText.textContent = "Waiting for gesture...";
+            gestureIcon.textContent = "front_hand";
+          }, 2000);
+        }
+
+        // Mode change
+        modeRadios.forEach((radio) => {
+          radio.addEventListener("change", function () {
+            const mode = this.value.replace("-", "_");
+            modeLabel.textContent =
+              mode.toUpperCase().replace("_", " ") + " ACTIVE";
+            if (GestureCam.api) {
+              GestureCam.api.set_framing_mode(mode);
+            }
+          });
+        });
+
+        // Settings button
+        settingsBtn.addEventListener("click", () =>
+          GestureCam.navigateTo("settings"),
+        );
+
+        // Virtual camera toggle
+        startCameraBtn.addEventListener("click", () => {
+          if (GestureCam.api) {
+            GestureCam.api.toggle_virtual_camera();
+          }
+        });
+
+        // Initialize
+        GestureCam.init(function (api) {
+          GestureCam.setupWindowControls();
+          startCamera();
+        });
+      });
+    </script>
+  </body>
+</html>
