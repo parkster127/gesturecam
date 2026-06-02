@@ -48,7 +48,7 @@ class VisionWorker(threading.Thread):
     def update_frame(self, frame: np.ndarray):
         """Update the frame for the AI to process"""
         with self.frame_lock:
-            self.latest_frame = frame.copy()  # Copy to avoid race conditions
+            self.latest_frame = frame.copy()
         self.new_frame_event.set()
 
     def get_result(self) -> Optional[FaceMetrics]:
@@ -110,9 +110,7 @@ class VisionWorker(threading.Thread):
                 cx, cy = metrics.center
                 metrics.center = (cx * scale, cy * scale)
 
-                # Scale eyes (complex objects, simplifying just center for now)
-                # Note: Deep copy scaling would be needed for full eye mesh analysis
-                # For auto-framing, center/bbox is enough.
+                # Eye centers are enough for auto-framing
 
             # Update result safely
             with self.result_lock:
@@ -142,9 +140,7 @@ class GestureCamPipeline:
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
-        # AI Worker (The Eye)
-        # Lite Mode: 0.25 scale (320p), Simple Model
-        # Normal Mode: 0.5 scale (640p), Complex Model
+        # AI Worker (lite: 320p/complexity 0, normal: 640p/complexity 1)
         scale = 0.25 if lite_mode else 0.5
         complexity = 0 if lite_mode else 1
 
@@ -153,11 +149,9 @@ class GestureCamPipeline:
         )
         self.vision_worker.start()
 
-        # Camera Operator (The Cameraman)
         self.cameraman = CameraOperator(width, height)
-        self.cameraman.set_mode(CameraMode.SMART_ZOOM)  # Default to smart mode
+        self.cameraman.set_mode(CameraMode.SMART_ZOOM)
 
-        # Gesture Controller (The Hands)
         self.gesture_ctrl = GestureController()
 
         self.running = True
@@ -181,8 +175,7 @@ class GestureCamPipeline:
         # 1. Send to AI (Non-blocking)
         self.vision_worker.update_frame(frame)
 
-        # 1.5 Process Gestures (On main thread for now, light enough)
-        # Only process every 3rd frame to save CPU
+        # Gestures processed every 3rd frame
         if self.render_frames % 3 == 0:
             command = self.gesture_ctrl.detect(frame)
             action = command.get("action")

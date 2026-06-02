@@ -23,8 +23,6 @@ class VirtualCamera:
             return
 
         try:
-            # We delay creation until we are sure, or just create it.
-            # pyvirtualcam might raise error if no device found.
             self.cam = pyvirtualcam.Camera(
                 width=width,
                 height=height,
@@ -44,9 +42,6 @@ class VirtualCamera:
             return
 
         if self.cam:
-            # pyvirtualcam expects RGB usually, but we set fmt=BGR above if supported?
-            # Actually pyvirtualcam defaults to RGB. Let's check docs or be safe.
-            # "fmt" arg allows BGR.
             self.cam.send(frame)
             self.cam.sleep_until_next_frame()
 

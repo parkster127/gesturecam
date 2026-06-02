@@ -6,13 +6,7 @@ from typing import Optional, Tuple
 
 
 class FaceTracker:
-    """
-    Face detection and tracking with optional Face Mesh for detailed landmarks.
-
-    Two modes:
-    - Basic mode: Uses blaze_face for fast bounding box detection
-    - Advanced mode: Uses FaceMesh for 468 landmarks including eye tracking
-    """
+    """Face detection with optional FaceMesh for 468-landmark tracking."""
 
     def __init__(
         self,
@@ -26,7 +20,6 @@ class FaceTracker:
         self.face_mesh_tracker = None
         self.use_face_mesh = use_face_mesh
 
-        # Load calibration if available
         self.calibration = self._load_calibration(calibration_file)
 
         if use_face_mesh:
@@ -37,7 +30,6 @@ class FaceTracker:
     def _load_calibration(self, calibration_file: Optional[str]) -> dict:
         """Load personal calibration profile"""
         if calibration_file is None:
-            # Try default locations
             possible_paths = [
                 "calibration_profile.json",
                 os.path.join(
@@ -71,7 +63,6 @@ class FaceTracker:
                 refine_landmarks=True,
             )
 
-            # Apply calibration if available
             if "ear_threshold" in self.calibration:
                 self.face_mesh_tracker.ear_threshold = self.calibration["ear_threshold"]
                 logging.info(
@@ -89,7 +80,6 @@ class FaceTracker:
         self, min_detection_confidence: float, model_path: Optional[str]
     ):
         """Initialize basic face detection with BlazeFace"""
-        # Find model path
         if model_path is None:
             possible_paths = [
                 os.path.join(
@@ -161,11 +151,9 @@ class FaceTracker:
         """Detect using BlazeFace (fast bounding box only)"""
         import mediapipe as mp
 
-        # Convert BGR to RGB
         img_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=img_rgb)
 
-        # Detect faces
         result = self.face_detector.detect(mp_image)
 
         primary_face = None

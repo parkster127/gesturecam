@@ -6,8 +6,6 @@ class GestureRecognizer:
         self.pinch_upper = pinch_threshold_upper
         self.last_pinch_dist = None
         self.is_pinching = False
-        
-        # State for new gestures
         self.last_index_y = None
         self.zoom_locked = False
 
@@ -22,9 +20,7 @@ class GestureRecognizer:
         
         fingers = []
         
-        # Thumb: comparar x (horizontal) - índice 4 vs 3
-        # Para mano derecha: si tip.x > pip.x, pulgar está abierto
-        # Para mano izquierda es al revés, pero usamos heurística simple
+        # Thumb: comparar x (horizontal) - indice 4 vs 3
         thumb_tip_x = lm_list[4][0]
         thumb_ip_x = lm_list[3][0]
         # Determinamos orientación por posición relativa del pulgar al meñique
@@ -197,12 +193,7 @@ class GestureRecognizer:
         
         dist = math.hypot(x2 - x1, y2 - y1)
         
-        # Define states
-        # If distance < threshold -> Pinch Started
-        # If distance moves -> Zooming
-        # If distance > release threshold? Or fingers change?
-        
-        # Simple continuous mapping for now as per "aspirin01/pinch-zoom-opencv-ML"
+        # Continuous pinch distance mapping
         return dist
 
     def check_two_hand_zoom(self, hands):

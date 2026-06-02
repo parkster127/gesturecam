@@ -1,16 +1,4 @@
-"""
-Face Mesh Analysis Module - Data Science Oriented
-
-Provides detailed face vectorization with 468 landmarks including:
-- Eye landmarks and iris tracking
-- Facial feature vectors for analytics
-- Head pose estimation
-- Eye Aspect Ratio (EAR) for blink detection
-- Mouth Aspect Ratio (MAR) for expression analysis
-
-This module is designed for deeper understanding of facial vectors
-and can be used for debugging detection issues.
-"""
+"""Face mesh detection with 468 landmarks, EAR/MAR analysis and head pose estimation."""
 
 import cv2
 import numpy as np
@@ -240,11 +228,6 @@ class FaceMeshTracker:
         Calculate Eye Aspect Ratio (EAR).
 
         EAR = (||p2-p6|| + ||p3-p5||) / (2 * ||p1-p4||)
-
-        Where p1-p6 are the 6 eye landmarks in order:
-        p1: outer corner, p2-p3: upper lid, p4: inner corner, p5-p6: lower lid
-
-        Returns: float between 0 (closed) and ~0.4 (wide open)
         """
         if len(eye_landmarks) < 6:
             return 0.0
@@ -413,16 +396,7 @@ class FaceMeshTracker:
         return (dx / magnitude, dy / magnitude)
 
     def _create_feature_vector(self, metrics: FaceMetrics) -> np.ndarray:
-        """
-        Create a normalized feature vector for ML/data science analysis.
-
-        Features included:
-        - EAR (left, right, avg)
-        - MAR
-        - Head pose (pitch, yaw, roll)
-        - Eye openness binary
-        - Gaze direction (if available)
-        """
+        """Normalized feature vector from face metrics."""
         features = [
             metrics.left_eye.ear,
             metrics.right_eye.ear,
@@ -455,7 +429,6 @@ class FaceMeshTracker:
         self.mar_history.append(metrics.mar)
         self.pose_history.append((metrics.pitch, metrics.yaw, metrics.roll))
 
-        # Keep only recent history
         if len(self.ear_history) > self.history_size:
             self.ear_history.pop(0)
         if len(self.mar_history) > self.history_size:
@@ -611,7 +584,6 @@ class FaceMeshTracker:
         stats["mar_mean"] = float(np.mean(mar_arr))
         stats["mar_std"] = float(np.std(mar_arr))
 
-        # Estimate blinks (EAR drops below threshold)
         blinks = 0
         prev_open = True
         for ear in self.ear_history:

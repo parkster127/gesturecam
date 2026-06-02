@@ -68,31 +68,24 @@ class AppController:
         self.settings: SettingsManager = get_settings()
         self.i18n = get_i18n()
         
-        # Application state
         self.state: AppState = AppState.INITIALIZING
         self.onboarding_step: int = 1
         self.total_onboarding_steps: int = 3
         
-        # Component status
         self.camera_status = CameraStatus()
         self.gesture_status = GestureStatus()
         self.zoom_status = ZoomStatus()
         
-        # Current mode
         self.current_mode: str = self.settings.framing.default_mode
-        
-        # Virtual camera state
         self.virtual_cam_active: bool = False
         
-        # UI update callbacks
         self._on_state_change: Optional[Callable] = None
         self._on_camera_update: Optional[Callable] = None
         self._on_gesture_update: Optional[Callable] = None
         self._on_zoom_update: Optional[Callable] = None
         self._on_mode_change: Optional[Callable] = None
         
-        # Core components (initialized later)
-        self._pipeline = None
+        self._pipeline = None  # initialized in _initialize_components
         
         logger.info(f"{APP_NAME} v{APP_VERSION} controller initialized")
     
@@ -106,15 +99,12 @@ class AppController:
         try:
             self._set_state(AppState.INITIALIZING)
             
-            # Set language from settings
             set_language(self.settings.ui.language)
             
-            # Check if first run
             if self.settings.settings.first_run:
                 self._set_state(AppState.ONBOARDING)
                 return True
             
-            # Initialize camera and tracking
             if self._initialize_components():
                 self._set_state(AppState.READY)
                 return True
@@ -130,11 +120,9 @@ class AppController:
     def _initialize_components(self) -> bool:
         """Initialize core processing components."""
         try:
-            # Import here to avoid circular imports
-            from gesturecam.core.pipeline import GestureCamPipeline
+            from gesturecam.core.pipeline import GestureCamPipeline  # avoid circular import
             from gesturecam.config import Config
             
-            # Configure from settings
             config = Config()
             config.CAMERA_INDEX = self.settings.camera.device_index
             config.ZOOM_SMOOTHING = self.settings.zoom.smoothing
@@ -142,8 +130,7 @@ class AppController:
             config.MAX_ZOOM = self.settings.zoom.max_zoom
             config.HAND_DETECTION_CONFIDENCE = self.settings.gestures.detection_confidence
             
-            # Create pipeline (but don't start yet)
-            # self._pipeline = GestureCamPipeline(config)
+            # self._pipeline = GestureCamPipeline(config)  # not started yet
             
             logger.info("Core components initialized")
             return True
@@ -292,7 +279,6 @@ class AppController:
     
     def update_settings(self, **kwargs) -> None:
         """Update settings and save."""
-        # Update specific settings based on kwargs
         for key, value in kwargs.items():
             if hasattr(self.settings.settings, key):
                 setattr(self.settings.settings, key, value)

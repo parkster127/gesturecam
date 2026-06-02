@@ -1,19 +1,5 @@
 #!/usr/bin/env python3
-"""
-Personal Face Calibration Tool
-
-This tool helps you calibrate the face detection thresholds
-specifically for YOUR face characteristics.
-
-It will:
-1. Measure your baseline EAR (Eye Aspect Ratio) with eyes open
-2. Measure your EAR when blinking
-3. Calculate optimal thresholds
-4. Save a personal calibration profile
-
-Usage:
-    python -m tests.calibrate_face
-"""
+"""Personal face calibration tool. Usage: python -m tests.calibrate_face"""
 
 import cv2
 import numpy as np

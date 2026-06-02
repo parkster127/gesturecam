@@ -53,11 +53,7 @@ class Circle:
 
 
 class Mandala:
-    """
-    Generador de Mandalas con simetría radial
-
-    Un mandala replica el dibujo en múltiples ángulos alrededor de un centro.
-    """
+    """Generador de mandalas con simetria radial."""
 
     def __init__(
         self,
@@ -140,11 +136,7 @@ class Mandala:
 
 
 class Sphere3D:
-    """
-    Esfera 3D que genera mandalas
-
-    Una esfera que rota y proyecta patrones en 3D sobre el canvas 2D.
-    """
+    """Esfera 3D que genera mandalas proyectados en 2D."""
 
     def __init__(
         self,

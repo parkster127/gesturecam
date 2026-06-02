@@ -16,20 +16,18 @@ class Config:
 
     # Face Tracking
     FACE_DETECTION_CONFIDENCE: float = 0.5
-    USE_FACE_MESH: bool = True  # Enable detailed 468-landmark face mesh
-    FACE_MESH_REFINE_LANDMARKS: bool = True  # Enable iris detection (478 landmarks)
+    USE_FACE_MESH: bool = True
+    FACE_MESH_REFINE_LANDMARKS: bool = True  # 478 landmarks with iris
 
-    # Eye Detection Thresholds
-    EAR_THRESHOLD: float = 0.21  # Eye Aspect Ratio threshold for blink detection
-    MAR_THRESHOLD: float = 0.5  # Mouth Aspect Ratio threshold
+    EAR_THRESHOLD: float = 0.21
+    MAR_THRESHOLD: float = 0.5
 
-    # Calibration
-    CALIBRATION_FILE: str = "calibration_profile.json"  # Personal calibration profile
+    CALIBRATION_FILE: str = "calibration_profile.json"
 
     # Zoom Settings
     MIN_ZOOM: float = 1.0
     MAX_ZOOM: float = 3.0
-    ZOOM_SMOOTHING: float = 0.1  # 0.0 to 1.0 (1.0 = no smoothing)
+    ZOOM_SMOOTHING: float = 0.1  # 1.0 = no smoothing
 
     # Gesture Settings
     PINCH_THRESHOLD_LOWER: int = 30

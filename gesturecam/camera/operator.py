@@ -49,9 +49,8 @@ class CameraOperator:
         self.current_viewport = ViewportState(0, 0, source_width, source_height)
         self.target_viewport = ViewportState(0, 0, source_width, source_height)
 
-        # Configuración de comportamiento (Personalidad del camarógrafo)
-        self.smoothing_factor = 0.10  # Por defecto
-        self.dead_zone = 0.05  # Por defecto
+        self.smoothing_factor = 0.10
+        self.dead_zone = 0.05
 
         self.headroom = 0.3  # Espacio arriba de la cabeza
         self.min_zoom = 1.0  # Zoom mínimo
@@ -101,17 +100,15 @@ class CameraOperator:
         fx, fy, fw, fh = face_bbox
         cx, cy = face_center
 
-        # --- 1. CALCULAR ZOOM OBJETIVO ---
-        target_zoom = self.target_viewport.zoom_level  # Default to current
+        # 1. Calcular zoom objetivo
+        target_zoom = self.target_viewport.zoom_level
 
         if self.mode == CameraMode.SMART_ZOOM:
-            # Calcular zoom ideal crudo
             if fh > 10:
                 ideal_zoom = (self.source_height * self.target_face_ratio) / fh
                 ideal_zoom = max(self.min_zoom, min(ideal_zoom, self.max_zoom))
 
-                # APLICAR HYSTERESIS (Anti-Jitter de Zoom)
-                # Solo cambiar el zoom si la diferencia es significativa (> 8%)
+                # Hysteresis: solo cambiar zoom si diff > 8%
                 zoom_diff = (
                     abs(ideal_zoom - self.last_valid_zoom) / self.last_valid_zoom
                 )
@@ -120,7 +117,6 @@ class CameraOperator:
                     self.last_valid_zoom = ideal_zoom
                     target_zoom = ideal_zoom
                 else:
-                    # Mantener el zoom anterior para evitar "respiración"
                     target_zoom = self.last_valid_zoom
 
         elif self.mode == CameraMode.MANUAL or self.mode == CameraMode.FOLLOW:
@@ -144,8 +140,6 @@ class CameraOperator:
             )
             relative_dist = dist / self.source_width
 
-            # Si el movimiento es menor a la zona muerta, NO actualizamos el CENTRO
-            # PERO si el zoom cambió drásticamente, sí debemos actualizar el centro para re-encuadrar
             zoom_changed = abs(target_zoom - self.target_viewport.zoom_level) > 0.01
 
             if relative_dist < self.dead_zone and not zoom_changed:

@@ -51,7 +51,6 @@ class GestureCamWindow:
         if screens_dir.exists():
             return screens_dir
         
-        # Fallback to package directory
         package_screens = Path(__file__).parent / "screens"
         if package_screens.exists():
             return package_screens
@@ -124,7 +123,6 @@ class GestureCamWindow:
         """Called when the HTML page is loaded."""
         logger.info("Window loaded")
         
-        # Inject the bridge initialization script
         if self._window:
             self._window.evaluate_js("""
                 console.log('GestureCam UI loaded');

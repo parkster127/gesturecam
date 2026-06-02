@@ -55,12 +55,7 @@ class GestureController:
         pinky_tip = (int(lm[20].x * w), int(lm[20].y * h))
         wrist = (int(lm[0].x * w), int(lm[0].y * h))
 
-        # --- GESTURE 1: OPEN PALM (STOP/LOCK) ---
-        # All fingers extended and separated
-        # Simple check: Tips are higher than PIP joints (assuming hand is up)
-        # Better check: Distance from wrist to tips is large
-
-        # Check if 4 fingers are open (Index, Middle, Ring, Pinky)
+        # OPEN PALM: toggle lock when all fingers extended
         fingers_open = 0
         if lm[8].y < lm[6].y:
             fingers_open += 1
@@ -71,7 +66,7 @@ class GestureController:
         if lm[20].y < lm[18].y:
             fingers_open += 1
 
-        # Check thumb extended (x distance from wrist)
+        # Check thumb extended
         thumb_open = abs(lm[4].x - lm[2].x) > 0.05
 
         if fingers_open == 4 and thumb_open:
@@ -80,26 +75,16 @@ class GestureController:
                 self.last_gesture_time = time.time()
                 return {"action": "toggle_lock", "value": self.is_locked}
 
-        # --- GESTURE 2: PINCH (ZOOM CONTROL) ---
-        # Thumb and Index close together?
+        # PINCH: map Y position to zoom level (top=3x, bottom=1x)
         pinch_dist = math.hypot(
             thumb_tip[0] - index_tip[0], thumb_tip[1] - index_tip[1]
         )
 
-        # Normalize distance by hand size (wrist to middle finger mcp)
-        # hand_size = math.hypot(wrist[0] - lm[9].x*w, wrist[1] - lm[9].y*h)
-        # normalized_pinch = pinch_dist / hand_size if hand_size > 0 else 0
 
-        # Simple Pinch Logic:
-        # If pinch is held (distance < 40px), track Y movement for zoom
-        if pinch_dist < 60:  # Pinch threshold
-            # Draw visual feedback
+        if pinch_dist < 60:
             cv2.line(frame, thumb_tip, index_tip, (0, 255, 0), 3)
 
-            # Map Y position to Zoom Level
-            # Top of screen (y=0) = Zoom 3.0x
-            # Bottom of screen (y=h) = Zoom 1.0x
-            zoom_level = 1.0 + (1.0 - (thumb_tip[1] / h)) * 2.0  # Range 1.0 to 3.0
+            zoom_level = 1.0 + (1.0 - (thumb_tip[1] / h)) * 2.0
 
             return {"action": "set_zoom", "value": zoom_level}
 

@@ -12,8 +12,6 @@ class CameraSource:
         
         if not self.cap.isOpened():
             logging.error(f"Failed to open camera source: {source}")
-            # If basic source fails, maybe try to be resilient? 
-            # But usually we want to fail hard here or let upper layer handle it.
         else:
             logging.info(f"Opened camera source: {source}")
 

@@ -82,13 +82,9 @@ def main():
     )
     
     args = parser.parse_args()
-    
-    # Setup logging
     setup_logging(args.debug)
     
     if args.test:
-        # Run the test script
-        print("Running live camera test...")
         import subprocess
         subprocess.run([sys.executable, "tests/test_zoom_live.py"])
     elif args.cli:

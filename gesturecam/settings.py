@@ -12,12 +12,10 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
-# Type definitions
 FramingMode = Literal["manual", "face_follow", "headshot", "shirt_up"]
 VirtualCamBackend = Literal["obs", "v4l2", "unitycapture"]
 Resolution = Literal["720p", "1080p", "1440p", "4k"]
 
-# Resolution mapping
 RESOLUTIONS = {
     "720p": (1280, 720),
     "1080p": (1920, 1080),
@@ -94,8 +92,6 @@ class AppSettings:
     gestures: GestureSettings = field(default_factory=GestureSettings)
     output: OutputSettings = field(default_factory=OutputSettings)
     ui: UISettings = field(default_factory=UISettings)
-    
-    # Metadata
     version: str = "1.0.0"
     first_run: bool = True
 
@@ -223,7 +219,6 @@ class SettingsManager:
         self.save()
 
 
-# Global settings instance (singleton pattern)
 _settings_manager: Optional[SettingsManager] = None
 
 
