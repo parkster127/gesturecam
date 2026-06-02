@@ -1,11 +1,11 @@
 """Face mesh detection with 468 landmarks, EAR/MAR analysis and head pose estimation."""
 
+import logging
+import math
+from dataclasses import dataclass, field
+
 import cv2
 import numpy as np
-import logging
-from dataclasses import dataclass, field
-from typing import Optional, List, Tuple, Dict
-import math
 
 
 # MediaPipe Face Mesh landmark indices (key points)
@@ -109,10 +109,10 @@ class EyeMetrics:
 
     ear: float = 0.0  # Eye Aspect Ratio
     is_open: bool = True
-    center: Tuple[float, float] = (0.0, 0.0)
-    iris_center: Optional[Tuple[float, float]] = None
-    gaze_direction: Optional[Tuple[float, float]] = None  # Normalized gaze vector
-    landmarks: List[Tuple[float, float]] = field(default_factory=list)
+    center: tuple[float, float] = (0.0, 0.0)
+    iris_center: tuple[float, float] | None = None
+    gaze_direction: tuple[float, float] | None = None  # Normalized gaze vector
+    landmarks: list[tuple[float, float]] = field(default_factory=list)
 
 
 @dataclass
@@ -124,10 +124,10 @@ class FaceMetrics:
     confidence: float = 0.0
 
     # Bounding box (x, y, w, h)
-    bbox: Tuple[int, int, int, int] = (0, 0, 0, 0)
+    bbox: tuple[int, int, int, int] = (0, 0, 0, 0)
 
     # Face center
-    center: Tuple[float, float] = (0.0, 0.0)
+    center: tuple[float, float] = (0.0, 0.0)
 
     # Head pose (in degrees)
     pitch: float = 0.0  # Nodding up/down
@@ -144,10 +144,10 @@ class FaceMetrics:
     is_mouth_open: bool = False
 
     # All 468 landmarks as numpy array for advanced analysis
-    landmarks_array: Optional[np.ndarray] = None
+    landmarks_array: np.ndarray | None = None
 
     # Feature vector for ML/analysis (normalized)
-    feature_vector: Optional[np.ndarray] = None
+    feature_vector: np.ndarray | None = None
 
 
 class FaceMeshTracker:
@@ -179,23 +179,24 @@ class FaceMeshTracker:
 
         # Historical data for analysis
         self.history_size = 30  # frames
-        self.ear_history: List[float] = []
-        self.mar_history: List[float] = []
-        self.pose_history: List[Tuple[float, float, float]] = []
+        self.ear_history: list[float] = []
+        self.mar_history: list[float] = []
+        self.pose_history: list[tuple[float, float, float]] = []
 
         self._initialize_mediapipe()
 
     def _initialize_mediapipe(self):
         """Initialize MediaPipe Face Mesh"""
         import os
+
         try:
-            import mediapipe as mp
             from mediapipe.tasks import python as mp_python
             from mediapipe.tasks.python import vision as mp_vision
 
-            model_path = os.path.expanduser('~/.gesturecam/face_landmarker.task')
+            model_path = os.path.expanduser("~/.gesturecam/face_landmarker.task")
             if not os.path.exists(model_path):
                 import urllib.request
+
                 os.makedirs(os.path.dirname(model_path), exist_ok=True)
                 url = "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task"
                 urllib.request.urlretrieve(url, model_path)
@@ -208,7 +209,7 @@ class FaceMeshTracker:
                 output_face_blendshapes=self.refine_landmarks,
                 min_face_detection_confidence=self.min_detection_confidence,
                 min_face_presence_confidence=self.min_tracking_confidence,
-                min_tracking_confidence=self.min_tracking_confidence
+                min_tracking_confidence=self.min_tracking_confidence,
             )
 
             self.face_mesh = mp_vision.FaceLandmarker.create_from_options(options)
@@ -218,12 +219,10 @@ class FaceMeshTracker:
             )
 
         except Exception as e:
-            logging.warning(
-                f"Failed to initialize MediaPipe FaceLandmarker: {e}. Using mock mode."
-            )
+            logging.warning(f"Failed to initialize MediaPipe FaceLandmarker: {e}. Using mock mode.")
             self.mock_mode = True
 
-    def _calculate_ear(self, eye_landmarks: List[Tuple[float, float]]) -> float:
+    def _calculate_ear(self, eye_landmarks: list[tuple[float, float]]) -> float:
         """
         Calculate Eye Aspect Ratio (EAR).
 
@@ -269,8 +268,8 @@ class FaceMeshTracker:
         return vertical / horizontal
 
     def _estimate_head_pose(
-        self, landmarks: np.ndarray, frame_shape: Tuple[int, int]
-    ) -> Tuple[float, float, float]:
+        self, landmarks: np.ndarray, frame_shape: tuple[int, int]
+    ) -> tuple[float, float, float]:
         """
         Estimate head pose (pitch, yaw, roll) from face landmarks.
 
@@ -346,14 +345,12 @@ class FaceMeshTracker:
             return 0.0, 0.0, 0.0
 
     def _extract_eye_landmarks(
-        self, landmarks: np.ndarray, indices: List[int]
-    ) -> List[Tuple[float, float]]:
+        self, landmarks: np.ndarray, indices: list[int]
+    ) -> list[tuple[float, float]]:
         """Extract eye landmark coordinates"""
         return [(landmarks[i][0], landmarks[i][1]) for i in indices]
 
-    def _get_eye_center(
-        self, eye_landmarks: List[Tuple[float, float]]
-    ) -> Tuple[float, float]:
+    def _get_eye_center(self, eye_landmarks: list[tuple[float, float]]) -> tuple[float, float]:
         """Calculate center of eye from landmarks"""
         if not eye_landmarks:
             return (0.0, 0.0)
@@ -362,8 +359,8 @@ class FaceMeshTracker:
         return (x, y)
 
     def _get_iris_center(
-        self, landmarks: np.ndarray, iris_indices: List[int]
-    ) -> Optional[Tuple[float, float]]:
+        self, landmarks: np.ndarray, iris_indices: list[int]
+    ) -> tuple[float, float] | None:
         """Get iris center (requires refine_landmarks=True)"""
         if not self.refine_landmarks:
             return None
@@ -375,9 +372,9 @@ class FaceMeshTracker:
 
     def _compute_gaze_direction(
         self,
-        eye_center: Tuple[float, float],
-        iris_center: Optional[Tuple[float, float]],
-    ) -> Optional[Tuple[float, float]]:
+        eye_center: tuple[float, float],
+        iris_center: tuple[float, float] | None,
+    ) -> tuple[float, float] | None:
         """
         Compute normalized gaze direction vector.
 
@@ -453,6 +450,7 @@ class FaceMeshTracker:
         h, w, _ = frame.shape
 
         import mediapipe as mp
+
         # Convert BGR to RGB
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb_frame)
@@ -467,10 +465,7 @@ class FaceMeshTracker:
 
         # Convert to numpy array with pixel coordinates
         landmarks = np.array(
-            [
-                [lm.x * w, lm.y * h, lm.z * w]  # z is also scaled by width
-                for lm in face_landmarks
-            ]
+            [[lm.x * w, lm.y * h, lm.z * w] for lm in face_landmarks]  # z is also scaled by width
         )
 
         metrics.detected = True
@@ -487,9 +482,7 @@ class FaceMeshTracker:
 
         # Extract eye landmarks
         left_eye_lms = self._extract_eye_landmarks(landmarks, FaceMeshIndices.LEFT_EYE)
-        right_eye_lms = self._extract_eye_landmarks(
-            landmarks, FaceMeshIndices.RIGHT_EYE
-        )
+        right_eye_lms = self._extract_eye_landmarks(landmarks, FaceMeshIndices.RIGHT_EYE)
 
         # Calculate EAR for each eye
         left_ear = self._calculate_ear(left_eye_lms)
@@ -553,7 +546,7 @@ class FaceMeshTracker:
 
         return metrics
 
-    def get_statistics(self) -> Dict:
+    def get_statistics(self) -> dict:
         """
         Get statistical analysis of recent detections.
 
@@ -600,9 +593,7 @@ class FaceMeshTracker:
                 prev = self.pose_history[i - 1]
                 curr = self.pose_history[i]
                 movement = math.sqrt(
-                    (curr[0] - prev[0]) ** 2
-                    + (curr[1] - prev[1]) ** 2
-                    + (curr[2] - prev[2]) ** 2
+                    (curr[0] - prev[0]) ** 2 + (curr[1] - prev[1]) ** 2 + (curr[2] - prev[2]) ** 2
                 )
                 movements.append(movement)
             stats["head_movement"] = float(np.mean(movements))

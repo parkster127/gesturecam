@@ -1,8 +1,8 @@
-import cv2
+import json
 import logging
 import os
-import json
-from typing import Optional, Tuple
+
+import cv2
 
 
 class FaceTracker:
@@ -11,9 +11,9 @@ class FaceTracker:
     def __init__(
         self,
         min_detection_confidence: float = 0.5,
-        model_path: Optional[str] = None,
+        model_path: str | None = None,
         use_face_mesh: bool = False,
-        calibration_file: Optional[str] = None,
+        calibration_file: str | None = None,
     ):
         self.mock_mode = False
         self.face_detector = None
@@ -27,14 +27,12 @@ class FaceTracker:
         else:
             self._init_blaze_face(min_detection_confidence, model_path)
 
-    def _load_calibration(self, calibration_file: Optional[str]) -> dict:
+    def _load_calibration(self, calibration_file: str | None) -> dict:
         """Load personal calibration profile"""
         if calibration_file is None:
             possible_paths = [
                 "calibration_profile.json",
-                os.path.join(
-                    os.path.dirname(__file__), "..", "..", "calibration_profile.json"
-                ),
+                os.path.join(os.path.dirname(__file__), "..", "..", "calibration_profile.json"),
             ]
             for path in possible_paths:
                 if os.path.exists(path):
@@ -43,7 +41,7 @@ class FaceTracker:
 
         if calibration_file and os.path.exists(calibration_file):
             try:
-                with open(calibration_file, "r") as f:
+                with open(calibration_file) as f:
                     data = json.load(f)
                     logging.info(f"Loaded face calibration from {calibration_file}")
                     return data.get("recommended_thresholds", {})
@@ -76,9 +74,7 @@ class FaceTracker:
             self.use_face_mesh = False
             self._init_blaze_face(min_detection_confidence, None)
 
-    def _init_blaze_face(
-        self, min_detection_confidence: float, model_path: Optional[str]
-    ):
+    def _init_blaze_face(self, min_detection_confidence: float, model_path: str | None):
         """Initialize basic face detection with BlazeFace"""
         if model_path is None:
             possible_paths = [
@@ -98,7 +94,6 @@ class FaceTracker:
                     break
 
         try:
-            import mediapipe as mp
             from mediapipe.tasks import python as mp_python
             from mediapipe.tasks.python import vision as mp_vision
 
@@ -112,14 +107,10 @@ class FaceTracker:
                 self.face_detector = mp_vision.FaceDetector.create_from_options(options)
                 logging.info(f"MediaPipe FaceDetector loaded from {model_path}")
             else:
-                raise FileNotFoundError(
-                    f"Face model not found. Tried: {possible_paths}"
-                )
+                raise FileNotFoundError(f"Face model not found. Tried: {possible_paths}")
 
         except Exception as e:
-            logging.warning(
-                f"MediaPipe Face Detection not found/working: {e}. Using MOCK mode."
-            )
+            logging.warning(f"MediaPipe Face Detection not found/working: {e}. Using MOCK mode.")
             self.mock_mode = True
 
     def detect_face(self, frame):

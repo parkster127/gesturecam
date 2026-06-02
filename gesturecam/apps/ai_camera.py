@@ -4,9 +4,9 @@ This is the "Smart Camera" mode of the software.
 """
 
 import cv2
-import time
-from gesturecam.core.pipeline import GestureCamPipeline
+
 from gesturecam.camera.operator import CameraMode
+from gesturecam.core.pipeline import GestureCamPipeline
 
 
 class AICameraApp:
@@ -43,10 +43,7 @@ class AICameraApp:
                         cv2.resize(debug_frame, (640, 360)),
                     )
                 elif (
-                    cv2.getWindowProperty(
-                        f"{self.window_name} - Debug", cv2.WND_PROP_VISIBLE
-                    )
-                    >= 1
+                    cv2.getWindowProperty(f"{self.window_name} - Debug", cv2.WND_PROP_VISIBLE) >= 1
                 ):
                     cv2.destroyWindow(f"{self.window_name} - Debug")
 
@@ -76,9 +73,7 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--lite", action="store_true", help="Modo bajo rendimiento (i3)"
-    )
+    parser.add_argument("--lite", action="store_true", help="Modo bajo rendimiento (i3)")
     parser.add_argument("--src", type=int, default=0, help="Índice de cámara")
     args = parser.parse_args()
 

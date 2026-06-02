@@ -5,13 +5,13 @@ Sistema de Registro de Usuarios con Reconocimiento Facial
 Crea "huellas faciales" (embeddings) para identificar usuarios automáticamente.
 """
 
-import cv2
-import numpy as np
 import json
 import os
-from datetime import datetime
-from typing import Optional, Dict, List, Tuple
 import sys
+from datetime import datetime
+
+import cv2
+import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -74,7 +74,7 @@ class FaceEmbeddingExtractor:
             300,
         ]
 
-    def extract_embedding(self, frame: np.ndarray) -> Optional[np.ndarray]:
+    def extract_embedding(self, frame: np.ndarray) -> np.ndarray | None:
         """
         Extrae embedding de 128 dimensiones del rostro en el frame.
 
@@ -152,10 +152,10 @@ class UserDatabase:
     def load(self):
         """Cargar base de datos desde disco"""
         if os.path.exists(self.db_path):
-            with open(self.db_path, "r") as f:
+            with open(self.db_path) as f:
                 data = json.load(f)
                 # Convertir embeddings de lista a numpy array
-                for user_id, user_data in data.items():
+                for _user_id, user_data in data.items():
                     user_data["embeddings"] = [
                         np.array(emb, dtype=np.float32)
                         for emb in user_data["embeddings"]
@@ -183,8 +183,8 @@ class UserDatabase:
         self,
         user_id: str,
         name: str,
-        embeddings: List[np.ndarray],
-        metadata: Optional[Dict] = None,
+        embeddings: list[np.ndarray],
+        metadata: dict | None = None,
     ):
         """Agregar o actualizar usuario"""
         self.users[user_id] = {
@@ -194,11 +194,11 @@ class UserDatabase:
         }
         self.save()
 
-    def get_user(self, user_id: str) -> Optional[Dict]:
+    def get_user(self, user_id: str) -> dict | None:
         """Obtener datos de usuario"""
         return self.users.get(user_id)
 
-    def list_users(self) -> List[Dict]:
+    def list_users(self) -> list[dict]:
         """Listar todos los usuarios"""
         return [
             {"id": uid, "name": data["name"], "num_embeddings": len(data["embeddings"])}
@@ -229,7 +229,7 @@ class FaceRecognizer:
 
     def recognize(
         self, embedding: np.ndarray
-    ) -> Tuple[Optional[str], Optional[str], float]:
+    ) -> tuple[str | None, str | None, float]:
         """
         Reconocer usuario por embedding.
 
@@ -439,13 +439,13 @@ def register_new_user(camera_index: int = 0):
         )
 
         print(f"\n{'=' * 60}")
-        print(f"✅ USUARIO REGISTRADO EXITOSAMENTE")
+        print("✅ USUARIO REGISTRADO EXITOSAMENTE")
         print(f"{'=' * 60}")
         print(f"Nombre: {name}")
         print(f"ID: {user_id}")
         print(f"Muestras capturadas: {len(embeddings)}")
         print(
-            f"\nAhora puedes usar el sistema de asistencia y serás reconocido automáticamente."
+            "\nAhora puedes usar el sistema de asistencia y serás reconocido automáticamente."
         )
     else:
         print(f"\n✗ Error: Se necesitan al menos 5 muestras (tienes {len(embeddings)})")

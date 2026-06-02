@@ -4,16 +4,16 @@ Test de Auto-Framing Avanzado - Vectores AI Cam
 Prueba los nuevos modos inteligentes del camarógrafo.
 """
 
-import cv2
-import numpy as np
-import sys
 import os
+import sys
+
+import cv2
 
 # Add parent directory to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
+from gesturecam.camera.operator import CameraMode, CameraOperator
 from gesturecam.vision.face_mesh import FaceMeshTracker
-from gesturecam.camera.operator import CameraOperator, CameraMode
 
 
 def main():

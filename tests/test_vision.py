@@ -1,24 +1,25 @@
 import unittest
-import numpy as np
-from gesturecam.vision.hands import HandTracker
+
 from gesturecam.vision.face import FaceTracker
 from gesturecam.vision.gestures import GestureRecognizer
+from gesturecam.vision.hands import HandTracker
+
 
 class TestVisionWrappers(unittest.TestCase):
-    
+
     def test_instantiation(self):
         # Just check if we can instantiate without errors (dependencies loaded)
         ht = HandTracker()
         ft = FaceTracker()
         gr = GestureRecognizer()
-        
+
         self.assertIsNotNone(ht)
         self.assertIsNotNone(ft)
         self.assertIsNotNone(gr)
 
     def test_gesture_logic_mock(self):
         gr = GestureRecognizer()
-        
+
         # Mock hand data structure from cvzone
         # lmList is usually [ [x,y,z], ... ]
         # Index 4 is thumb, 8 is index
@@ -29,7 +30,7 @@ class TestVisionWrappers(unittest.TestCase):
         # Set specific coords
         mock_hand["lmList"][4] = [100, 100, 0]
         mock_hand["lmList"][8] = [130, 140, 0] # dist = 50
-        
+
         dist = gr.check_pinch_zoom([mock_hand])
         self.assertEqual(int(dist), 50) # 30^2 + 40^2 = 50^2
 

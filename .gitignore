@@ -141,11 +141,17 @@ archive/
 *.tflite
 *.task
 
-# Internal session reports (not for public repo)
+# Internal docs (not for public repo)
 FACE_ANALYSIS_REPORT.md
 RESPUESTA_ASISTENCIA.md
 RESUMEN_COMPLETO.md
 RESUMEN_FINAL_SESION.md
+GUIA_INICIO.md
+ATTENDANCE_SYSTEM_GUIDE.md
+RECONOCIMIENTO_FACIAL_GUIA.md
+LINKEDIN_POST.md
+OPEN_SOURCE_CHECKLIST.md
+docs/OPENCAI_CODEX_APPLICATION.md
 
 # User data and attendance logs (privacy)
 attendance_system/logs/

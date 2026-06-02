@@ -2,16 +2,13 @@
 Drawing Module - Handle drawing interactions with hand gestures
 """
 
-from typing import Optional, Tuple, List
-import numpy as np
-
 
 class DrawingState:
     """Estado del sistema de dibujo"""
 
     def __init__(self):
         self.is_drawing = False
-        self.last_point: Optional[Tuple[int, int]] = None
+        self.last_point: tuple[int, int] | None = None
         self.current_color = (255, 100, 255)  # Magenta por defecto
         self.current_radius = 20
         self.mode = "circle"  # circle, mandala, sphere
@@ -78,7 +75,7 @@ class GestureDrawingController:
         # Detectar si el índice está levantado (modo dibujo)
         index_tip = lm_list[8]  # Punta del índice
         index_pip = lm_list[6]  # Segunda articulación del índice
-        thumb_tip = lm_list[4]
+        lm_list[4]
 
         # Otros dedos
         middle_tip = lm_list[12]

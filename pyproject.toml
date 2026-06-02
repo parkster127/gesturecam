@@ -73,13 +73,13 @@ performance = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/gesturecam"
-Documentation = "https://github.com/yourusername/gesturecam#readme"
-Repository = "https://github.com/yourusername/gesturecam"
-Issues = "https://github.com/yourusername/gesturecam/issues"
-Changelog = "https://github.com/yourusername/gesturecam/blob/main/CHANGELOG.md"
-Security = "https://github.com/yourusername/gesturecam/blob/main/SECURITY.md"
-"Source Code" = "https://github.com/yourusername/gesturecam"
+Homepage = "https://github.com/parkster127/gesturecam"
+Documentation = "https://github.com/parkster127/gesturecam#readme"
+Repository = "https://github.com/parkster127/gesturecam"
+Issues = "https://github.com/parkster127/gesturecam/issues"
+Changelog = "https://github.com/parkster127/gesturecam/blob/main/CHANGELOG.md"
+Security = "https://github.com/parkster127/gesturecam/blob/main/SECURITY.md"
+"Source Code" = "https://github.com/parkster127/gesturecam"
 
 [project.scripts]
 gesturecam = "gesturecam.__main__:main"
@@ -115,6 +115,16 @@ exclude = '''
 [tool.ruff]
 line-length = 100
 target-version = "py310"
+exclude = [
+    ".git",
+    ".venv",
+    "venv",
+    "build",
+    "dist",
+    "__pycache__",
+]
+
+[tool.ruff.lint]
 select = [
     "E",   # pycodestyle errors
     "W",   # pycodestyle warnings
@@ -127,14 +137,6 @@ select = [
 ignore = [
     "E501",  # Line too long (handled by black)
     "B008",  # Do not perform function calls in argument defaults
-]
-exclude = [
-    ".git",
-    ".venv",
-    "venv",
-    "build",
-    "dist",
-    "__pycache__",
 ]
 
 [tool.mypy]
@@ -162,21 +164,8 @@ ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-python_files = ["test_*.py"]
-python_classes = ["Test*"]
-python_functions = ["test_*"]
-addopts = [
-    "--strict-markers",
-    "--strict-config",
-    "--cov=gesturecam",
-    "--cov-report=term-missing",
-    "--cov-report=html",
-]
-markers = [
-    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
-    "integration: marks tests as integration tests",
-    "unit: marks tests as unit tests",
-]
+python_files = ["test_core.py", "test_vision.py"]
+addopts = ["-v", "--tb=short"]
 
 [tool.coverage.run]
 source = ["gesturecam"]

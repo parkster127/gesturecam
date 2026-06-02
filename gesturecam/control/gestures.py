@@ -3,11 +3,12 @@ Gesture Control Module
 Handles hand gestures for controlling the camera (Zoom, Lock, Mode).
 """
 
-import cv2
-import numpy as np
-import mediapipe as mp
 import math
 import time
+
+import cv2
+import mediapipe as mp
+import numpy as np
 
 
 class GestureController:
@@ -50,10 +51,10 @@ class GestureController:
         # Convert key landmarks to pixel coords
         thumb_tip = (int(lm[4].x * w), int(lm[4].y * h))
         index_tip = (int(lm[8].x * w), int(lm[8].y * h))
-        middle_tip = (int(lm[12].x * w), int(lm[12].y * h))
-        ring_tip = (int(lm[16].x * w), int(lm[16].y * h))
-        pinky_tip = (int(lm[20].x * w), int(lm[20].y * h))
-        wrist = (int(lm[0].x * w), int(lm[0].y * h))
+        (int(lm[12].x * w), int(lm[12].y * h))
+        (int(lm[16].x * w), int(lm[16].y * h))
+        (int(lm[20].x * w), int(lm[20].y * h))
+        (int(lm[0].x * w), int(lm[0].y * h))
 
         # OPEN PALM: toggle lock when all fingers extended
         fingers_open = 0
@@ -76,10 +77,7 @@ class GestureController:
                 return {"action": "toggle_lock", "value": self.is_locked}
 
         # PINCH: map Y position to zoom level (top=3x, bottom=1x)
-        pinch_dist = math.hypot(
-            thumb_tip[0] - index_tip[0], thumb_tip[1] - index_tip[1]
-        )
-
+        pinch_dist = math.hypot(thumb_tip[0] - index_tip[0], thumb_tip[1] - index_tip[1])
 
         if pinch_dist < 60:
             cv2.line(frame, thumb_tip, index_tip, (0, 255, 0), 3)

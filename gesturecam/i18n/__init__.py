@@ -6,7 +6,6 @@ Provides translation support for multiple languages.
 import json
 import logging
 from pathlib import Path
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -31,35 +30,35 @@ class I18n:
     Internationalization manager.
     Loads and provides access to translated strings.
     """
-    
+
     def __init__(self, language: str = DEFAULT_LANGUAGE):
         self.language = language
         self.translations: dict = {}
         self.fallback: dict = {}
         self._load_translations()
-    
+
     def _get_translations_dir(self) -> Path:
         """Get the directory containing translation files."""
         return Path(__file__).parent / "locales"
-    
+
     def _load_translations(self) -> None:
         """Load translation files."""
         translations_dir = self._get_translations_dir()
-        
+
         # Always load English as fallback
         fallback_path = translations_dir / "en.json"
         if fallback_path.exists():
-            with open(fallback_path, "r", encoding="utf-8") as f:
+            with open(fallback_path, encoding="utf-8") as f:
                 self.fallback = json.load(f)
         else:
             # Use embedded English translations
             self.fallback = ENGLISH_TRANSLATIONS
-        
+
         # Load requested language
         if self.language != "en":
             lang_path = translations_dir / f"{self.language}.json"
             if lang_path.exists():
-                with open(lang_path, "r", encoding="utf-8") as f:
+                with open(lang_path, encoding="utf-8") as f:
                     self.translations = json.load(f)
                 logger.info(f"Loaded translations for: {self.language}")
             else:
@@ -67,7 +66,7 @@ class I18n:
                 self.translations = {}
         else:
             self.translations = self.fallback
-    
+
     def set_language(self, language: str) -> None:
         """Change the current language."""
         if language in SUPPORTED_LANGUAGES:
@@ -75,59 +74,59 @@ class I18n:
             self._load_translations()
         else:
             logger.warning(f"Unsupported language: {language}")
-    
+
     def t(self, key: str, **kwargs) -> str:
         """
         Get translated string by key.
         Supports nested keys with dot notation: "settings.camera.title"
         Supports variable interpolation: t("hello", name="World") -> "Hello, World!"
-        
+
         Args:
             key: Translation key (supports dot notation for nested keys)
             **kwargs: Variables to interpolate into the string
-        
+
         Returns:
             Translated string, or the key itself if not found
         """
         # Try current language first
         value = self._get_nested(self.translations, key)
-        
+
         # Fall back to English
         if value is None:
             value = self._get_nested(self.fallback, key)
-        
+
         # If still not found, return the key
         if value is None:
             logger.warning(f"Translation not found: {key}")
             return key
-        
+
         # Interpolate variables
         if kwargs:
             try:
                 value = value.format(**kwargs)
             except KeyError as e:
                 logger.warning(f"Missing interpolation variable in '{key}': {e}")
-        
+
         return value
-    
-    def _get_nested(self, data: dict, key: str) -> Optional[str]:
+
+    def _get_nested(self, data: dict, key: str) -> str | None:
         """Get a nested value from a dictionary using dot notation."""
         keys = key.split(".")
         current = data
-        
+
         for k in keys:
             if isinstance(current, dict) and k in current:
                 current = current[k]
             else:
                 return None
-        
+
         return current if isinstance(current, str) else None
-    
+
     def get_language_name(self, code: str = None) -> str:
         """Get the display name for a language code."""
         code = code or self.language
         return SUPPORTED_LANGUAGES.get(code, code)
-    
+
     def get_available_languages(self) -> dict:
         """Get all available languages."""
         return SUPPORTED_LANGUAGES.copy()
@@ -328,7 +327,7 @@ ENGLISH_TRANSLATIONS = {
 
 
 # Global i18n instance (singleton)
-_i18n: Optional[I18n] = None
+_i18n: I18n | None = None
 
 
 def get_i18n() -> I18n:
@@ -342,7 +341,7 @@ def get_i18n() -> I18n:
 def t(key: str, **kwargs) -> str:
     """
     Shortcut for getting translated strings.
-    
+
     Usage:
         from gesturecam.i18n import t
         print(t("dashboard.title"))

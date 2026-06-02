@@ -3,7 +3,6 @@ try:
 except ImportError:
     pyvirtualcam = None
 
-import numpy as np
 import logging
 
 
@@ -16,9 +15,7 @@ class VirtualCamera:
         self.mock_mode = False
 
         if pyvirtualcam is None:
-            logging.warning(
-                "pyvirtualcam library not installed. Virtual Camera disabled."
-            )
+            logging.warning("pyvirtualcam library not installed. Virtual Camera disabled.")
             self.mock_mode = True
             return
 

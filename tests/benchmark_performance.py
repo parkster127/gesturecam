@@ -4,11 +4,12 @@ Benchmark de Rendimiento - Vectores AI Cam
 Mide el rendimiento del pipeline de visión actual.
 """
 
-import cv2
-import time
-import numpy as np
-import sys
 import os
+import sys
+import time
+
+import cv2
+import numpy as np
 import psutil  # Para medir CPU/RAM
 
 # Add parent directory to path

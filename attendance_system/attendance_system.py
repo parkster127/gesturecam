@@ -17,15 +17,15 @@ Casos de uso:
 4. Supervisión de exámenes online
 """
 
-import cv2
-import numpy as np
 import json
-import time
-from datetime import datetime, timedelta
-from dataclasses import dataclass, asdict
-from typing import List, Optional
 import os
 import sys
+import time
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta
+
+import cv2
+import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -50,7 +50,7 @@ class AttendanceSession:
 
     session_id: str
     start_time: str
-    end_time: Optional[str] = None
+    end_time: str | None = None
     total_duration: float = 0.0  # segundos
 
     # Estadísticas
@@ -64,7 +64,7 @@ class AttendanceSession:
     avg_ear: float = 0.0
     avg_attention_score: float = 0.0
 
-    events: List[AttendanceEvent] = None
+    events: list[AttendanceEvent] = None
 
     def __post_init__(self):
         if self.events is None:
@@ -101,7 +101,7 @@ class AttendanceSystem:
         self.absence_threshold = 3.0  # segundos sin detección = ausente
 
         # Estado
-        self.session: Optional[AttendanceSession] = None
+        self.session: AttendanceSession | None = None
         self.is_running = False
         self.last_detection_time = 0
         self.blink_start_time = None
@@ -166,7 +166,7 @@ class AttendanceSystem:
         self.is_running = False
 
         print(f"\n{'=' * 60}")
-        print(f"SESIÓN FINALIZADA")
+        print("SESIÓN FINALIZADA")
         print(f"{'=' * 60}")
         self._print_session_summary()
 
@@ -503,7 +503,7 @@ class AttendanceSystem:
         print(f"Atención promedio: {self.session.avg_attention_score:.1f}%")
         print(f"Eventos registrados: {len(self.session.events)}")
 
-    def run(self, duration_minutes: Optional[float] = None):
+    def run(self, duration_minutes: float | None = None):
         """
         Ejecutar sistema de asistencia
 

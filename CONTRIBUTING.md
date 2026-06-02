@@ -33,7 +33,7 @@ cd gesturecam
 3. Add the upstream repository:
 
 ```bash
-git remote add upstream https://github.com/original-owner/gesturecam.git
+git remote add upstream https://github.com/parkster127/gesturecam.git
 ```
 
 ## Development Setup

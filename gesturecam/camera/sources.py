@@ -1,6 +1,7 @@
-import cv2
-import time
 import logging
+
+import cv2
+
 
 class CameraSource:
     def __init__(self, source):
@@ -9,7 +10,7 @@ class CameraSource:
         """
         self.source = source
         self.cap = cv2.VideoCapture(source)
-        
+
         if not self.cap.isOpened():
             logging.error(f"Failed to open camera source: {source}")
         else:

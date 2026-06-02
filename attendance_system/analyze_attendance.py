@@ -5,21 +5,19 @@ Analizador de Logs de Asistencia
 Genera reportes y visualizaciones de las sesiones de asistencia.
 """
 
+import glob
 import json
 import os
-import glob
 from datetime import datetime, timedelta
-from typing import List, Dict
-import sys
 
 
-def load_session(filepath: str) -> Dict:
+def load_session(filepath: str) -> dict:
     """Cargar sesión desde JSON"""
-    with open(filepath, "r") as f:
+    with open(filepath) as f:
         return json.load(f)
 
 
-def analyze_session(session: Dict) -> Dict:
+def analyze_session(session: dict) -> dict:
     """Analizar sesión y generar métricas"""
 
     start = datetime.fromisoformat(session["start_time"])
@@ -88,7 +86,7 @@ def analyze_session(session: Dict) -> Dict:
     }
 
 
-def generate_report(sessions: List[Dict]):
+def generate_report(sessions: list[dict]):
     """Generar reporte de múltiples sesiones"""
 
     print("\n" + "=" * 80)
@@ -103,34 +101,34 @@ def generate_report(sessions: List[Dict]):
         print(f"SESIÓN {i}: {analysis['session_id']}")
         print(f"{'-' * 80}")
 
-        print(f"\n📅 Información General:")
+        print("\n📅 Información General:")
         print(f"   Inicio:         {analysis['start_time']}")
         print(f"   Fin:            {analysis['end_time']}")
         print(f"   Duración:       {analysis['duration_formatted']}")
 
-        print(f"\n👤 Presencia:")
+        print("\n👤 Presencia:")
         print(f"   Tasa de detección:  {analysis['detection_rate']:.1f}%")
         print(f"   Tasa de presencia:  {analysis['presence_rate']:.1f}%")
         print(
             f"   Tiempo presente:    {timedelta(seconds=int(analysis['time_present_seconds']))}"
         )
 
-        print(f"\n👁️  Métricas de Atención:")
+        print("\n👁️  Métricas de Atención:")
         print(f"   EAR promedio:       {analysis['avg_ear']:.3f}")
         print(f"   Atención promedio:  {analysis['avg_attention_score']:.1f}%")
         print(f"   Evaluación:         {analysis['attention_grade']}")
 
-        print(f"\n⚠️  Alertas:")
+        print("\n⚠️  Alertas:")
         print(f"   Parpadeos:          {analysis['blink_count']}")
         print(f"   Somnolencia:        {analysis['drowsy_count']}")
         print(f"   Baja atención:      {analysis['attention_alerts']}")
 
-        print(f"\n📊 Eventos registrados:")
+        print("\n📊 Eventos registrados:")
         for event_type, count in analysis["event_counts"].items():
             print(f"   {event_type:15s}  {count}")
 
         # Recomendaciones
-        print(f"\n💡 Recomendaciones:")
+        print("\n💡 Recomendaciones:")
         if analysis["avg_attention_score"] < 60:
             print("   ⚠️  Atención baja - considerar pausas más frecuentes")
         if analysis["drowsy_count"] > 5:
@@ -186,8 +184,8 @@ def main():
 
         if not files:
             print(f"No se encontraron sesiones en {args.dir}")
-            print(f"\nPara crear una sesión, ejecuta:")
-            print(f"  python tests/attendance_system.py --duration 1")
+            print("\nPara crear una sesión, ejecuta:")
+            print("  python tests/attendance_system.py --duration 1")
             return
 
         sessions = [load_session(f) for f in sorted(files)]

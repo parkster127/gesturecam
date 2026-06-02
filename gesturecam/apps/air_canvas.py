@@ -18,18 +18,19 @@ Gestos:
 3️⃣ Presiona '3' = Modo Esfera 3D
 """
 
+import os
+import sys
+import time
+
 import cv2
 import numpy as np
-import time
-import sys
-import os
 
 # Add parent directory to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
-from gesturecam.vision.hands import HandTracker
 from gesturecam.effects.geometry import GeometryRenderer
 from gesturecam.interactions.drawing import GestureDrawingController
+from gesturecam.vision.hands import HandTracker
 
 
 class AirCanvas:
@@ -80,9 +81,7 @@ class AirCanvas:
         # Modo actual
         mode_text = f"Modo: {self.drawing_controller.state.mode.upper()}"
         mode_color = self.drawing_controller.state.current_color
-        cv2.putText(
-            overlay, mode_text, (20, 35), cv2.FONT_HERSHEY_DUPLEX, 1.0, mode_color, 2
-        )
+        cv2.putText(overlay, mode_text, (20, 35), cv2.FONT_HERSHEY_DUPLEX, 1.0, mode_color, 2)
 
         # Color actual (preview)
         color_preview_x = 20
@@ -344,17 +343,13 @@ class AirCanvas:
 
                 elif key == ord("+") or key == ord("="):
                     self.drawing_controller.state.mandala_symmetry += 1
-                    print(
-                        f"Simetría: {self.drawing_controller.state.mandala_symmetry}x"
-                    )
+                    print(f"Simetría: {self.drawing_controller.state.mandala_symmetry}x")
 
                 elif key == ord("-"):
                     self.drawing_controller.state.mandala_symmetry = max(
                         2, self.drawing_controller.state.mandala_symmetry - 1
                     )
-                    print(
-                        f"Simetría: {self.drawing_controller.state.mandala_symmetry}x"
-                    )
+                    print(f"Simetría: {self.drawing_controller.state.mandala_symmetry}x")
 
                 elif key == ord("v"):
                     self.show_video = not self.show_video

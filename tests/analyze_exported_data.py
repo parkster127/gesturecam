@@ -10,13 +10,13 @@ Usage:
     python -m tests.analyze_exported_data [--file history_XXXXXX.csv]
 """
 
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import os
-import sys
 import glob
+import os
 from datetime import datetime
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 
 
 # Find latest export file
@@ -48,7 +48,7 @@ def analyze_eye_patterns(df: pd.DataFrame) -> dict:
     }
 
     # Filter to detected frames only
-    detected = df[df["detected"] == True]
+    detected = df[df["detected"]]
 
     if len(detected) == 0:
         return results
@@ -94,7 +94,7 @@ def analyze_eye_patterns(df: pd.DataFrame) -> dict:
 
 def analyze_head_pose(df: pd.DataFrame) -> dict:
     """Analyze head pose patterns"""
-    detected = df[df["detected"] == True]
+    detected = df[df["detected"]]
 
     if len(detected) == 0:
         return {}
@@ -132,7 +132,7 @@ def analyze_head_pose(df: pd.DataFrame) -> dict:
 
 def analyze_detection_quality(df: pd.DataFrame) -> dict:
     """Analyze overall detection quality"""
-    detected = df[df["detected"] == True]
+    detected = df[df["detected"]]
 
     if len(detected) == 0:
         return {"quality_score": 0, "issues": ["No faces detected"]}
@@ -173,7 +173,7 @@ def analyze_detection_quality(df: pd.DataFrame) -> dict:
 
 def plot_ear_timeline(df: pd.DataFrame, output_path: str = None):
     """Plot EAR over time"""
-    detected = df[df["detected"] == True].copy()
+    detected = df[df["detected"]].copy()
 
     if len(detected) == 0:
         print("No data to plot")
@@ -222,7 +222,7 @@ def plot_ear_timeline(df: pd.DataFrame, output_path: str = None):
 
 def plot_head_pose(df: pd.DataFrame, output_path: str = None):
     """Plot head pose analysis"""
-    detected = df[df["detected"] == True].copy()
+    detected = df[df["detected"]].copy()
 
     if len(detected) == 0:
         print("No data to plot")
@@ -324,7 +324,7 @@ def generate_report(df: pd.DataFrame) -> str:
         report.append(f"Left-Right Correlation: {stats['left_right_correlation']:.3f}")
 
         openness = eye_analysis["eye_openness"]
-        report.append(f"\nEye Openness:")
+        report.append("\nEye Openness:")
         report.append(f"  Left eye open: {openness['left_open_rate']:.1f}%")
         report.append(f"  Right eye open: {openness['right_open_rate']:.1f}%")
         report.append(f"  Both eyes open: {openness['both_open_rate']:.1f}%")

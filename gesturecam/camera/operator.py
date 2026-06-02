@@ -6,11 +6,10 @@ Recibir métricas de detección (dónde está la cara) y calcular el encuadre ó
 Implementa suavizado (smoothing) para simular un operador de cámara humano.
 """
 
-import numpy as np
-import cv2
-import time
-from typing import Tuple, Optional, Dict
 from dataclasses import dataclass
+
+import cv2
+import numpy as np
 
 
 class CameraMode:
@@ -88,9 +87,7 @@ class CameraOperator:
 
         print(f"🎥 CAMERA MODE: {mode.upper()} (Smooth: {self.smoothing_factor})")
 
-    def update_target(
-        self, face_bbox: Tuple[int, int, int, int], face_center: Tuple[float, float]
-    ):
+    def update_target(self, face_bbox: tuple[int, int, int, int], face_center: tuple[float, float]):
         """
         Actualizar el objetivo basado en la nueva posición de la cara.
         """
@@ -109,9 +106,7 @@ class CameraOperator:
                 ideal_zoom = max(self.min_zoom, min(ideal_zoom, self.max_zoom))
 
                 # Hysteresis: solo cambiar zoom si diff > 8%
-                zoom_diff = (
-                    abs(ideal_zoom - self.last_valid_zoom) / self.last_valid_zoom
-                )
+                zoom_diff = abs(ideal_zoom - self.last_valid_zoom) / self.last_valid_zoom
 
                 if zoom_diff > 0.08:
                     self.last_valid_zoom = ideal_zoom
@@ -135,8 +130,7 @@ class CameraOperator:
         if self.last_face_center:
             # Distancia euclidiana
             dist = np.sqrt(
-                (cx - self.last_face_center[0]) ** 2
-                + (cy - self.last_face_center[1]) ** 2
+                (cx - self.last_face_center[0]) ** 2 + (cy - self.last_face_center[1]) ** 2
             )
             relative_dist = dist / self.source_width
 
@@ -166,17 +160,13 @@ class CameraOperator:
         """Ajustar nivel de zoom manual"""
         self.manual_zoom = max(self.min_zoom, min(zoom_level, self.max_zoom))
 
-    def process(self) -> Tuple[int, int, int, int]:
+    def process(self) -> tuple[int, int, int, int]:
         """Calcula el frame suavizado"""
         # Interpolación Lineal (LERP)
         factor = self.smoothing_factor
 
-        self.current_viewport.x += (
-            self.target_viewport.x - self.current_viewport.x
-        ) * factor
-        self.current_viewport.y += (
-            self.target_viewport.y - self.current_viewport.y
-        ) * factor
+        self.current_viewport.x += (self.target_viewport.x - self.current_viewport.x) * factor
+        self.current_viewport.y += (self.target_viewport.y - self.current_viewport.y) * factor
         self.current_viewport.width += (
             self.target_viewport.width - self.current_viewport.width
         ) * factor

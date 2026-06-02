@@ -9,16 +9,15 @@ Architecture:
 
 import threading
 import time
+
 import cv2
 import numpy as np
-from queue import Queue, Empty
-import logging
-from typing import Optional, Dict, Tuple
+
+from gesturecam.camera.operator import CameraMode, CameraOperator
+from gesturecam.control.gestures import GestureController
 
 # Imports locales
 from gesturecam.vision.face_mesh import FaceMeshTracker, FaceMetrics
-from gesturecam.camera.operator import CameraOperator, CameraMode
-from gesturecam.control.gestures import GestureController
 
 
 class VisionWorker(threading.Thread):
@@ -32,7 +31,7 @@ class VisionWorker(threading.Thread):
         self.daemon = True
         self.running = False
         self.latest_frame = None
-        self.latest_result: Optional[FaceMetrics] = None
+        self.latest_result: FaceMetrics | None = None
         self.frame_lock = threading.Lock()
         self.result_lock = threading.Lock()
         self.new_frame_event = threading.Event()
@@ -51,7 +50,7 @@ class VisionWorker(threading.Thread):
             self.latest_frame = frame.copy()
         self.new_frame_event.set()
 
-    def get_result(self) -> Optional[FaceMetrics]:
+    def get_result(self) -> FaceMetrics | None:
         """Get the latest AI result safely"""
         with self.result_lock:
             return self.latest_result
@@ -144,9 +143,7 @@ class GestureCamPipeline:
         scale = 0.25 if lite_mode else 0.5
         complexity = 0 if lite_mode else 1
 
-        self.vision_worker = VisionWorker(
-            model_complexity=complexity, downscale_factor=scale
-        )
+        self.vision_worker = VisionWorker(model_complexity=complexity, downscale_factor=scale)
         self.vision_worker.start()
 
         self.cameraman = CameraOperator(width, height)
@@ -161,7 +158,7 @@ class GestureCamPipeline:
         self.last_render_time = time.time()
         self.render_frames = 0
 
-    def step(self) -> Tuple[np.ndarray, np.ndarray]:
+    def step(self) -> tuple[np.ndarray, np.ndarray]:
         """
         Process a single frame loop.
         Returns: (debug_frame, virtual_cam_frame)

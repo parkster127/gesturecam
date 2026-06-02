@@ -4,11 +4,12 @@ Quick Face Analysis - Terminal Only
 Analyzes your face vectors and prints results to terminal
 """
 
+import os
+import sys
+import time
+
 import cv2
 import numpy as np
-import sys
-import os
-import time
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -100,19 +101,19 @@ def quick_analysis(num_frames=100, camera_index=0):
 
     # EAR Analysis
     print("\n--- EYE ASPECT RATIO (EAR) ---")
-    print(f"Left Eye:")
+    print("Left Eye:")
     print(f"  Mean: {np.mean(ear_left):.4f}")
     print(f"  Std:  {np.std(ear_left):.4f}")
     print(f"  Min:  {np.min(ear_left):.4f}")
     print(f"  Max:  {np.max(ear_left):.4f}")
 
-    print(f"\nRight Eye:")
+    print("\nRight Eye:")
     print(f"  Mean: {np.mean(ear_right):.4f}")
     print(f"  Std:  {np.std(ear_right):.4f}")
     print(f"  Min:  {np.min(ear_right):.4f}")
     print(f"  Max:  {np.max(ear_right):.4f}")
 
-    print(f"\nAverage EAR:")
+    print("\nAverage EAR:")
     print(f"  Mean: {np.mean(ear_avg):.4f}")
     print(f"  Std:  {np.std(ear_avg):.4f}")
 
@@ -128,7 +129,7 @@ def quick_analysis(num_frames=100, camera_index=0):
         print("  ✓ Low asymmetry (good)")
 
     # Variability
-    print(f"\nEAR Variability:")
+    print("\nEAR Variability:")
     if np.std(ear_avg) < 0.02:
         print(f"  ⚠️  Very low ({np.std(ear_avg):.4f}) - detection may be struggling")
         print("      Try:")
@@ -195,9 +196,9 @@ def quick_analysis(num_frames=100, camera_index=0):
         threshold_suggestion = max(0.15, min(0.30, threshold_suggestion))
 
         print(f"\n💡 SUGGESTED EAR THRESHOLD: {threshold_suggestion:.3f}")
-        print(f"   (Current default: 0.21)")
+        print("   (Current default: 0.21)")
         print(f"   Your mean EAR: {np.mean(ear_avg):.3f}")
-        print(f"   This threshold is 2 std deviations below your mean")
+        print("   This threshold is 2 std deviations below your mean")
 
     print("\n" + "=" * 60)
     print("Analysis complete!")

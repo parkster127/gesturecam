@@ -9,6 +9,8 @@
 
 **Virtual Camera Controlled by Hand Gestures & Facial Expressions**
 
+[![Dashboard](docs/assets/main_dashboard.png)](docs/assets/main_dashboard.png)
+
 [Quick Start](#quick-start) · [Features](#features) · [Architecture](#architecture) · [Documentation](#documentation) · [Contributing](#contributing)
 
 </div>
@@ -214,10 +216,8 @@ Smooth Camera Movement
 
 ## Documentation
 
-- [Architecture Documentation](./docs/ARCHITECTURE.md) - Deep dive into system design
-- [API Reference](./docs/API.md) - Complete API documentation
-- [Development Guide](./docs/DEVELOPMENT.md) - Setting up dev environment
-- [Troubleshooting](./docs/TROUBLESHOOTING.md) - Common issues and solutions
+- [Architecture](./docs/ARCHITECTURE.md) - System design and component overview
+- [Features](./docs/FEATURES.md) - Complete feature reference
 - [Contributing](./CONTRIBUTING.md) - How to contribute
 
 ---
@@ -343,8 +343,6 @@ This project is licensed under the **MIT License** - see the [LICENSE](./LICENSE
 
 - **Bug Reports**: [GitHub Issues](https://github.com/parkster127/gesturecam/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/parkster127/gesturecam/discussions)
-- **Email**: gesturecam@example.com
-- **Wiki**: [Project Wiki](https://github.com/parkster127/gesturecam/wiki)
 
 ---
 

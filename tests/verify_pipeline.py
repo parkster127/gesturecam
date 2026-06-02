@@ -4,10 +4,11 @@ Verificación de Pipeline Desacoplado - Vectores AI Cam
 Prueba la arquitectura "Hybrid Engine" (Video Thread + AI Worker).
 """
 
-import cv2
-import sys
-import os
 import argparse
+import os
+import sys
+
+import cv2
 
 # Add parent directory to path
 current_dir = os.path.dirname(os.path.abspath(__file__))

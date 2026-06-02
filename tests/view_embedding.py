@@ -4,8 +4,9 @@ Ver Huella Facial - Visualiza tu embedding como vector
 """
 
 import json
-import numpy as np
 import sys
+
+import numpy as np
 
 
 def view_user_embedding(user_id=None):
@@ -13,7 +14,7 @@ def view_user_embedding(user_id=None):
 
     # Cargar base de datos
     try:
-        with open("users_database.json", "r") as f:
+        with open("users_database.json") as f:
             db = json.load(f)
     except FileNotFoundError:
         print("❌ No se encontró users_database.json")

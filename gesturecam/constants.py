@@ -3,16 +3,16 @@ GestureCam Application Constants
 Central location for all application-wide constants.
 """
 
+import platform
 from pathlib import Path
 
 # Application Info
 APP_NAME = "GestureCam"
 APP_ID = "dev.vectores.gesturecam"
-APP_VERSION = "1.0.0"
+APP_VERSION = "0.1.0"
 APP_DESCRIPTION = "Virtual camera with gesture control for zoom and auto-framing"
-APP_AUTHOR = "Vectores"
-APP_WEBSITE = "https://gesturecam.app"
-APP_GITHUB = "https://github.com/vectores/gesture_cam"
+APP_AUTHOR = "GestureCam Contributors"
+APP_GITHUB = "https://github.com/parkster127/gesturecam"
 APP_LICENSE = "MIT"
 APP_COPYRIGHT = "© 2026 Vectores"
 
@@ -78,11 +78,11 @@ COLOR_GRAY = (128, 128, 128)
 
 # Gesture Colors (BGR for OpenCV)
 GESTURE_COLORS = {
-    "zoom_in": (0, 200, 0),      # Green
-    "zoom_out": (0, 100, 255),   # Orange
-    "hold": (0, 200, 255),       # Yellow
+    "zoom_in": (0, 200, 0),  # Green
+    "zoom_out": (0, 100, 255),  # Orange
+    "hold": (0, 200, 255),  # Yellow
     "neutral": (128, 128, 128),  # Gray
-    "none": (100, 100, 100),     # Dark gray
+    "none": (100, 100, 100),  # Dark gray
 }
 
 # Framing Mode Icons (for UI)
@@ -175,13 +175,11 @@ SHORTCUTS = {
     "quit": "Ctrl+Q",
 }
 
-# Platform Detection
-import platform
-
 PLATFORM = platform.system().lower()
 IS_MACOS = PLATFORM == "darwin"
 IS_WINDOWS = PLATFORM == "windows"
 IS_LINUX = PLATFORM == "linux"
+
 
 # Get appropriate virtual cam backend
 def get_default_backend() -> str:

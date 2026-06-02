@@ -17,14 +17,14 @@ Controls:
     e - Export feature vectors (last 100 frames)
 """
 
-import cv2
-import numpy as np
-import time
 import csv
 import os
-from datetime import datetime
-from typing import List, Dict
 import sys
+import time
+from datetime import datetime
+
+import cv2
+import numpy as np
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -44,8 +44,8 @@ class FaceVectorAnalyzer:
         )
 
         # Data collection
-        self.feature_history: List[np.ndarray] = []
-        self.metrics_history: List[Dict] = []
+        self.feature_history: list[np.ndarray] = []
+        self.metrics_history: list[dict] = []
         self.max_history = 1000
 
         # Display settings
@@ -56,7 +56,7 @@ class FaceVectorAnalyzer:
         self.output_dir = "analysis_output"
         os.makedirs(self.output_dir, exist_ok=True)
 
-    def _metrics_to_dict(self, metrics: FaceMetrics) -> Dict:
+    def _metrics_to_dict(self, metrics: FaceMetrics) -> dict:
         """Convert metrics to dictionary for CSV export"""
         return {
             "timestamp": time.time(),

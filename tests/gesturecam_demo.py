@@ -16,19 +16,20 @@ Framing inteligente con Face Mesh:
 - Detección de ojos para mejor centrado
 """
 
+import os
+import sys
+import time
+
 import cv2
 import numpy as np
-import time
-import sys
-import os
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from gesturecam.vision.hands import HandTracker
+from gesturecam.core.framing import FramingController
+from gesturecam.core.zoom import ZoomController
 from gesturecam.vision.face import FaceTracker
 from gesturecam.vision.gestures import GestureRecognizer
-from gesturecam.core.zoom import ZoomController
-from gesturecam.core.framing import FramingController
+from gesturecam.vision.hands import HandTracker
 
 
 class GestureCamDemo:

@@ -8,13 +8,13 @@ Uso:
 2. Luego ejecuta normal para detectar.
 """
 
-import cv2
-import numpy as np
 import json
+import math
 import os
 import sys
-import time
-import math
+
+import cv2
+import numpy as np
 
 # Add parent to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -40,12 +40,10 @@ class ChuyDetector:
     def load_chuy_data(self):
         """Cargar el embedding de El Chuy si existe"""
         if os.path.exists(CHUY_DATA_FILE):
-            with open(CHUY_DATA_FILE, "r") as f:
+            with open(CHUY_DATA_FILE) as f:
                 data = json.load(f)
                 self.chuy_embedding = np.array(data["embedding"])
-                print(
-                    f"✅ Datos de El Chuy cargados ({len(self.chuy_embedding)} dimensiones)"
-                )
+                print(f"✅ Datos de El Chuy cargados ({len(self.chuy_embedding)} dimensiones)")
         else:
             print("⚠️ El Chuy no está registrado. Ejecuta con --register primero.")
 
@@ -53,7 +51,7 @@ class ChuyDetector:
         """Guardar el embedding de El Chuy"""
         with open(CHUY_DATA_FILE, "w") as f:
             json.dump({"embedding": embedding.tolist(), "name": "El Chuy"}, f)
-        print(f"✅ El Chuy ha sido registrado exitosamente!")
+        print("✅ El Chuy ha sido registrado exitosamente!")
 
     def extract_embedding(self, landmarks):
         """Extraer un vector de características de los landmarks"""
@@ -341,9 +339,7 @@ class ChuyDetector:
 
                 if current_emb is not None:
                     # Comparar con El Chuy
-                    similarity = self.cosine_similarity(
-                        current_emb, self.chuy_embedding
-                    )
+                    similarity = self.cosine_similarity(current_emb, self.chuy_embedding)
                     is_chuy = similarity > self.threshold
 
                 # Dibujar bbox
@@ -474,12 +470,8 @@ def show_start_screen():
         btn_x = w // 2 - btn_w // 2
 
         # Botón 1: Registrar
-        cv2.rectangle(
-            frame, (btn_x, btn_y), (btn_x + btn_w, btn_y + btn_h), (50, 50, 50), -1
-        )
-        cv2.rectangle(
-            frame, (btn_x, btn_y), (btn_x + btn_w, btn_y + btn_h), (0, 255, 255), 3
-        )
+        cv2.rectangle(frame, (btn_x, btn_y), (btn_x + btn_w, btn_y + btn_h), (50, 50, 50), -1)
+        cv2.rectangle(frame, (btn_x, btn_y), (btn_x + btn_w, btn_y + btn_h), (0, 255, 255), 3)
         cv2.putText(
             frame,
             "[1] REGISTRAR A EL CHUY",
@@ -493,12 +485,8 @@ def show_start_screen():
         # Botón 2: Detectar
         btn_y2 = btn_y + btn_h + 30
         btn_color = (0, 255, 0) if chuy_registered else (100, 100, 100)
-        cv2.rectangle(
-            frame, (btn_x, btn_y2), (btn_x + btn_w, btn_y2 + btn_h), (50, 50, 50), -1
-        )
-        cv2.rectangle(
-            frame, (btn_x, btn_y2), (btn_x + btn_w, btn_y2 + btn_h), btn_color, 3
-        )
+        cv2.rectangle(frame, (btn_x, btn_y2), (btn_x + btn_w, btn_y2 + btn_h), (50, 50, 50), -1)
+        cv2.rectangle(frame, (btn_x, btn_y2), (btn_x + btn_w, btn_y2 + btn_h), btn_color, 3)
         cv2.putText(
             frame,
             "[2] DETECTAR (Es El Chuy?)",
@@ -522,12 +510,8 @@ def show_start_screen():
 
         # Botón 3: Salir
         btn_y3 = btn_y2 + btn_h + 50
-        cv2.rectangle(
-            frame, (btn_x, btn_y3), (btn_x + btn_w, btn_y3 + btn_h), (50, 50, 50), -1
-        )
-        cv2.rectangle(
-            frame, (btn_x, btn_y3), (btn_x + btn_w, btn_y3 + btn_h), (0, 0, 255), 3
-        )
+        cv2.rectangle(frame, (btn_x, btn_y3), (btn_x + btn_w, btn_y3 + btn_h), (50, 50, 50), -1)
+        cv2.rectangle(frame, (btn_x, btn_y3), (btn_x + btn_w, btn_y3 + btn_h), (0, 0, 255), 3)
         cv2.putText(
             frame,
             "[Q] SALIR",

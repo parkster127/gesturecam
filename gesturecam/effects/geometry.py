@@ -2,10 +2,10 @@
 Geometry Generator - Create circles, mandalas, and geometric patterns
 """
 
-import numpy as np
-import cv2
-from typing import List, Tuple, Optional
 import math
+
+import cv2
+import numpy as np
 
 
 class Circle:
@@ -16,7 +16,7 @@ class Circle:
         x: int,
         y: int,
         radius: int,
-        color: Tuple[int, int, int],
+        color: tuple[int, int, int],
         thickness: int = 2,
         z: float = 0.0,
     ):
@@ -60,13 +60,13 @@ class Mandala:
         center_x: int,
         center_y: int,
         symmetry: int = 8,
-        color: Tuple[int, int, int] = (255, 100, 255),
+        color: tuple[int, int, int] = (255, 100, 255),
     ):
         self.center_x = center_x
         self.center_y = center_y
         self.symmetry = symmetry  # Número de repeticiones radiales
         self.color = color
-        self.points: List[Tuple[int, int]] = []  # Puntos del patrón original
+        self.points: list[tuple[int, int]] = []  # Puntos del patrón original
         self.age = 0
         self.alpha = 1.0
 
@@ -78,7 +78,7 @@ class Mandala:
         """Limpiar todos los puntos"""
         self.points.clear()
 
-    def _rotate_point(self, x: int, y: int, angle_rad: float) -> Tuple[int, int]:
+    def _rotate_point(self, x: int, y: int, angle_rad: float) -> tuple[int, int]:
         """Rotar un punto alrededor del centro"""
         # Trasladar al origen
         tx = x - self.center_x
@@ -143,7 +143,7 @@ class Sphere3D:
         center_x: int,
         center_y: int,
         radius: int = 100,
-        color: Tuple[int, int, int] = (100, 255, 255),
+        color: tuple[int, int, int] = (100, 255, 255),
     ):
         self.center_x = center_x
         self.center_y = center_y
@@ -152,7 +152,7 @@ class Sphere3D:
         self.rotation_x = 0.0  # Rotación en eje X
         self.rotation_y = 0.0  # Rotación en eje Y
         self.rotation_z = 0.0  # Rotación en eje Z
-        self.points_3d: List[Tuple[float, float, float]] = []  # Puntos en 3D
+        self.points_3d: list[tuple[float, float, float]] = []  # Puntos en 3D
         self.age = 0
         self.alpha = 1.0
         self.auto_rotate = True
@@ -177,9 +177,7 @@ class Sphere3D:
 
             self.points_3d.append((x, y, z))
 
-    def _rotate_3d_point(
-        self, x: float, y: float, z: float
-    ) -> Tuple[float, float, float]:
+    def _rotate_3d_point(self, x: float, y: float, z: float) -> tuple[float, float, float]:
         """Aplicar rotaciones 3D a un punto"""
         # Rotación en X
         cos_x, sin_x = math.cos(self.rotation_x), math.sin(self.rotation_x)
@@ -201,7 +199,7 @@ class Sphere3D:
 
         return (x, y, z)
 
-    def _project_to_2d(self, x: float, y: float, z: float) -> Tuple[int, int, float]:
+    def _project_to_2d(self, x: float, y: float, z: float) -> tuple[int, int, float]:
         """
         Proyección perspectiva 3D -> 2D
 
@@ -263,18 +261,14 @@ class Sphere3D:
         # Conectar puntos cercanos para efecto de malla (opcional)
         if draw_lines and len(projected_points) > 1:
             threshold = 50  # Distancia máxima para conectar puntos
-            for i in range(
-                0, len(projected_points), 5
-            ):  # Solo cada 5 puntos para no saturar
+            for i in range(0, len(projected_points), 5):  # Solo cada 5 puntos para no saturar
                 px, py, pz = projected_points[i]
                 for j in range(i + 1, min(i + 10, len(projected_points))):
                     qx, qy, qz = projected_points[j]
                     dist = math.sqrt((px - qx) ** 2 + (py - qy) ** 2)
                     if dist < threshold:
                         brightness = ((pz + qz) / 2.0 + 1.0) / 2.0
-                        color = tuple(
-                            int(c * brightness * self.alpha * 0.3) for c in self.color
-                        )
+                        color = tuple(int(c * brightness * self.alpha * 0.3) for c in self.color)
                         cv2.line(canvas, (px, py), (qx, qy), color, 1)
 
 
@@ -288,17 +282,17 @@ class GeometryRenderer:
     def __init__(self, width: int, height: int):
         self.width = width
         self.height = height
-        self.circles: List[Circle] = []
-        self.mandalas: List[Mandala] = []
-        self.spheres: List[Sphere3D] = []
-        self.current_mandala: Optional[Mandala] = None
+        self.circles: list[Circle] = []
+        self.mandalas: list[Mandala] = []
+        self.spheres: list[Sphere3D] = []
+        self.current_mandala: Mandala | None = None
 
     def add_circle(
         self,
         x: int,
         y: int,
         radius: int,
-        color: Tuple[int, int, int],
+        color: tuple[int, int, int],
         thickness: int = 2,
         z: float = 0.0,
     ):
@@ -311,7 +305,7 @@ class GeometryRenderer:
         center_x: int,
         center_y: int,
         symmetry: int = 8,
-        color: Tuple[int, int, int] = (255, 100, 255),
+        color: tuple[int, int, int] = (255, 100, 255),
     ):
         """Iniciar un nuevo mandala"""
         self.current_mandala = Mandala(center_x, center_y, symmetry, color)
@@ -332,7 +326,7 @@ class GeometryRenderer:
         center_x: int,
         center_y: int,
         radius: int = 100,
-        color: Tuple[int, int, int] = (100, 255, 255),
+        color: tuple[int, int, int] = (100, 255, 255),
     ):
         """Agregar una esfera 3D"""
         sphere = Sphere3D(center_x, center_y, radius, color)
@@ -361,7 +355,7 @@ class GeometryRenderer:
         self.spheres.clear()
         self.current_mandala = None
 
-    def render(self, background: Optional[np.ndarray] = None) -> np.ndarray:
+    def render(self, background: np.ndarray | None = None) -> np.ndarray:
         """
         Renderizar todos los objetos
 
