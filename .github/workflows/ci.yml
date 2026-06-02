@@ -38,8 +38,8 @@ jobs:
     - name: Install dependencies
       run: |
         pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install pytest pytest-cov
+        pip install -e .
+        pip install pytest
     - name: Run unit tests
       run: pytest tests/test_core.py tests/test_vision.py -v --tb=short
 
