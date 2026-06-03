@@ -380,67 +380,327 @@ class NativeUI:
             dpg.set_value("zoom_display", f"{value:.1f}x")
 
     def _on_settings_click(self):
-        """Open settings popup"""
-        # Create popup if not exists
+        """Open settings popup with tabbed panels."""
         if not dpg.does_item_exist("settings_popup"):
             with dpg.window(
                 label="Settings",
                 tag="settings_popup",
                 modal=True,
                 show=True,
-                width=400,
-                height=300,
-                pos=(self.WINDOW_WIDTH // 2 - 200, self.WINDOW_HEIGHT // 2 - 150),
+                width=520,
+                height=560,
+                pos=(self.WINDOW_WIDTH // 2 - 260, self.WINDOW_HEIGHT // 2 - 280),
                 on_close=lambda: dpg.configure_item("settings_popup", show=False),
             ):
-                dpg.add_text("Camera Settings", color=PRIMARY)
-                dpg.add_spacer(height=16)
+                with dpg.tab_bar(tag="settings_tabs"):
+                    # === TAB 1: CAMERA ===
+                    with dpg.tab(label="Camera"):
+                        dpg.add_spacer(height=8)
+                        dpg.add_text("Camera Device", color=PRIMARY)
+                        dpg.add_combo(
+                            items=["Auto-detect", "Camera 0", "Camera 1", "Camera 2"],
+                            default_value="Auto-detect",
+                            tag="set_camera_device",
+                            width=300,
+                        )
+                        dpg.add_spacer(height=12)
+                        dpg.add_text("Resolution", color=PRIMARY)
+                        dpg.add_combo(
+                            items=["720p", "1080p", "1440p", "4k"],
+                            default_value="1080p",
+                            tag="set_resolution",
+                            width=300,
+                        )
+                        dpg.add_spacer(height=12)
+                        dpg.add_text("Frame Rate", color=PRIMARY)
+                        dpg.add_combo(
+                            items=["15", "24", "30", "60"],
+                            default_value="30",
+                            tag="set_fps",
+                            width=300,
+                        )
+                        dpg.add_spacer(height=12)
+                        dpg.add_checkbox(
+                            label="Mirror (selfie view)",
+                            default_value=True,
+                            tag="set_mirror",
+                        )
 
-                # Detection sensitivity
-                dpg.add_text("Detection Sensitivity", color=TEXT_MUTED)
-                dpg.add_slider_float(
-                    label="Hand",
-                    default_value=0.5,
-                    min_value=0.1,
-                    max_value=1.0,
-                    tag="sensitivity_hand",
-                    width=250,
-                )
-                dpg.add_slider_float(
-                    label="Face",
-                    default_value=0.5,
-                    min_value=0.1,
-                    max_value=1.0,
-                    tag="sensitivity_face",
-                    width=250,
-                )
+                    # === TAB 2: GESTURES ===
+                    with dpg.tab(label="Gestures"):
+                        dpg.add_spacer(height=8)
+                        dpg.add_checkbox(
+                            label="Enable gesture control",
+                            default_value=True,
+                            tag="set_gestures_enabled",
+                        )
+                        dpg.add_spacer(height=8)
+                        dpg.add_text("Detection Sensitivity", color=PRIMARY)
+                        dpg.add_slider_float(
+                            label="Hand",
+                            default_value=0.5,
+                            min_value=0.1,
+                            max_value=1.0,
+                            tag="set_sensitivity_hand",
+                            width=300,
+                        )
+                        dpg.add_slider_float(
+                            label="Face",
+                            default_value=0.5,
+                            min_value=0.1,
+                            max_value=1.0,
+                            tag="set_sensitivity_face",
+                            width=300,
+                        )
+                        dpg.add_spacer(height=8)
+                        dpg.add_slider_float(
+                            label="Cooldown (sec)",
+                            default_value=0.5,
+                            min_value=0.1,
+                            max_value=2.0,
+                            tag="set_gesture_cooldown",
+                            width=300,
+                        )
+                        dpg.add_spacer(height=12)
+                        dpg.add_text("Active Gestures", color=PRIMARY)
+                        dpg.add_checkbox(
+                            label="Thumbs Up (Zoom In)",
+                            default_value=True,
+                            tag="set_gesture_thumbsup",
+                        )
+                        dpg.add_checkbox(
+                            label="Thumbs Down (Zoom Out)",
+                            default_value=True,
+                            tag="set_gesture_thumbsdown",
+                        )
+                        dpg.add_checkbox(
+                            label="Pinch (Smooth Zoom)", default_value=True, tag="set_gesture_pinch"
+                        )
+                        dpg.add_checkbox(
+                            label="Peace Sign (Pause)", default_value=True, tag="set_gesture_peace"
+                        )
+                        dpg.add_checkbox(
+                            label="Wink (Quick Action)", default_value=True, tag="set_gesture_wink"
+                        )
 
-                dpg.add_spacer(height=16)
+                    # === TAB 3: ZOOM & FRAMING ===
+                    with dpg.tab(label="Zoom & Framing"):
+                        dpg.add_spacer(height=8)
+                        dpg.add_text("Zoom Range", color=PRIMARY)
+                        with dpg.group(horizontal=True):
+                            dpg.add_text("Min:")
+                            dpg.add_slider_float(
+                                label="",
+                                default_value=1.0,
+                                min_value=1.0,
+                                max_value=2.0,
+                                tag="set_zoom_min",
+                                width=120,
+                            )
+                            dpg.add_text("Max:")
+                            dpg.add_slider_float(
+                                label="",
+                                default_value=3.0,
+                                min_value=1.5,
+                                max_value=5.0,
+                                tag="set_zoom_max",
+                                width=120,
+                            )
+                        dpg.add_spacer(height=12)
+                        dpg.add_text("Smoothing", color=PRIMARY)
+                        dpg.add_slider_float(
+                            label="Zoom smoothing",
+                            default_value=0.15,
+                            min_value=0.01,
+                            max_value=0.5,
+                            tag="set_zoom_smoothing",
+                            width=300,
+                        )
+                        dpg.add_slider_float(
+                            label="Framing smoothing",
+                            default_value=0.08,
+                            min_value=0.01,
+                            max_value=0.5,
+                            tag="set_framing_smoothing",
+                            width=300,
+                        )
+                        dpg.add_spacer(height=12)
+                        dpg.add_text("Tracking", color=PRIMARY)
+                        dpg.add_slider_float(
+                            label="Dead zone",
+                            default_value=0.05,
+                            min_value=0.01,
+                            max_value=0.2,
+                            tag="set_dead_zone",
+                            width=300,
+                        )
+                        dpg.add_slider_float(
+                            label="Face padding",
+                            default_value=0.3,
+                            min_value=0.0,
+                            max_value=1.0,
+                            tag="set_face_padding",
+                            width=300,
+                        )
 
-                # Smoothing
-                dpg.add_text("Tracking Smoothing", color=TEXT_MUTED)
-                dpg.add_slider_float(
-                    label="Smoothness",
-                    default_value=0.7,
-                    min_value=0.0,
-                    max_value=1.0,
-                    tag="smoothing",
-                    width=250,
-                )
+                    # === TAB 4: VIRTUAL CAMERA ===
+                    with dpg.tab(label="Virtual Cam"):
+                        dpg.add_spacer(height=8)
+                        dpg.add_checkbox(
+                            label="Enable virtual camera output",
+                            default_value=True,
+                            tag="set_vcam_enabled",
+                        )
+                        dpg.add_spacer(height=12)
+                        dpg.add_text("Backend", color=PRIMARY)
+                        dpg.add_combo(
+                            items=["obs", "v4l2", "unitycapture"],
+                            default_value="obs",
+                            tag="set_vcam_backend",
+                            width=300,
+                        )
+                        dpg.add_spacer(height=12)
+                        dpg.add_text("Output Name", color=PRIMARY)
+                        dpg.add_input_text(
+                            default_value="GestureCam",
+                            tag="set_vcam_name",
+                            width=300,
+                        )
+                        dpg.add_spacer(height=12)
+                        dpg.add_checkbox(
+                            label="Start virtual camera on launch",
+                            default_value=False,
+                            tag="set_vcam_autostart",
+                        )
 
-                dpg.add_spacer(height=20)
+                    # === TAB 5: PROFILES ===
+                    with dpg.tab(label="Profiles"):
+                        dpg.add_spacer(height=8)
+                        dpg.add_text("Preset Profiles", color=PRIMARY)
+                        dpg.add_spacer(height=8)
+                        for profile_name, description in [
+                            ("Default", "Balanced settings for general use"),
+                            ("Streaming", "1080p, responsive gestures, face follow"),
+                            ("Meeting", "720p, smooth framing, shirt-up mode"),
+                            ("Podcast", "1080p 24fps, headshot, gestures off"),
+                        ]:
+                            with dpg.group(horizontal=True):
+                                dpg.add_button(
+                                    label=profile_name,
+                                    callback=lambda s, a, n=profile_name: self._apply_profile(n),
+                                    width=100,
+                                    height=28,
+                                )
+                                dpg.add_text(description, color=TEXT_MUTED)
+                            dpg.add_spacer(height=4)
+                        dpg.add_spacer(height=16)
+                        dpg.add_separator()
+                        dpg.add_spacer(height=8)
+                        dpg.add_button(
+                            label="Reset to Defaults",
+                            callback=self._reset_settings,
+                            width=150,
+                            height=32,
+                        )
 
-                # Close button
-                dpg.add_button(
-                    label="Close",
-                    callback=lambda: dpg.configure_item("settings_popup", show=False),
-                    width=100,
-                )
+                # Bottom bar - save/close
+                dpg.add_spacer(height=12)
+                dpg.add_separator()
+                dpg.add_spacer(height=8)
+                with dpg.group(horizontal=True):
+                    dpg.add_button(
+                        label="Save",
+                        callback=self._save_settings,
+                        width=100,
+                        height=32,
+                    )
+                    dpg.add_button(
+                        label="Close",
+                        callback=lambda: dpg.configure_item("settings_popup", show=False),
+                        width=100,
+                        height=32,
+                    )
         else:
             dpg.configure_item("settings_popup", show=True)
 
         if self.on_settings_open:
             self.on_settings_open()
+
+    def _apply_profile(self, name: str):
+        from gesturecam.settings import get_settings
+
+        settings = get_settings()
+        settings.apply_profile(name)
+        self._load_settings_to_ui()
+        logger.info(f"Profile applied: {name}")
+
+    def _reset_settings(self):
+        from gesturecam.settings import get_settings
+
+        settings = get_settings()
+        settings.reset()
+        self._load_settings_to_ui()
+        logger.info("Settings reset to defaults")
+
+    def _save_settings(self):
+        from gesturecam.settings import get_settings
+
+        settings = get_settings()
+
+        # Read UI values into settings
+        settings.camera.resolution = dpg.get_value("set_resolution")
+        settings.camera.fps = int(dpg.get_value("set_fps"))
+        settings.camera.mirror = dpg.get_value("set_mirror")
+        settings.gestures.enabled = dpg.get_value("set_gestures_enabled")
+        settings.gestures.detection_confidence = dpg.get_value("set_sensitivity_hand")
+        settings.gestures.tracking_confidence = dpg.get_value("set_sensitivity_face")
+        settings.gestures.gesture_cooldown = dpg.get_value("set_gesture_cooldown")
+        settings.gestures.thumbs_up_enabled = dpg.get_value("set_gesture_thumbsup")
+        settings.gestures.thumbs_down_enabled = dpg.get_value("set_gesture_thumbsdown")
+        settings.gestures.pinch_enabled = dpg.get_value("set_gesture_pinch")
+        settings.gestures.peace_enabled = dpg.get_value("set_gesture_peace")
+        settings.gestures.wink_enabled = dpg.get_value("set_gesture_wink")
+        settings.zoom.min_zoom = dpg.get_value("set_zoom_min")
+        settings.zoom.max_zoom = dpg.get_value("set_zoom_max")
+        settings.zoom.smoothing = dpg.get_value("set_zoom_smoothing")
+        settings.framing.smoothing = dpg.get_value("set_framing_smoothing")
+        settings.framing.face_padding = dpg.get_value("set_face_padding")
+        settings.output.enabled = dpg.get_value("set_vcam_enabled")
+        settings.output.backend = dpg.get_value("set_vcam_backend")
+        settings.output.device_name = dpg.get_value("set_vcam_name")
+
+        settings.save()
+        logger.info("Settings saved")
+
+    def _load_settings_to_ui(self):
+        """Load current settings values into the UI controls."""
+        from gesturecam.settings import get_settings
+
+        s = get_settings()
+        if dpg.does_item_exist("set_resolution"):
+            dpg.set_value("set_resolution", s.camera.resolution)
+        if dpg.does_item_exist("set_fps"):
+            dpg.set_value("set_fps", str(s.camera.fps))
+        if dpg.does_item_exist("set_mirror"):
+            dpg.set_value("set_mirror", s.camera.mirror)
+        if dpg.does_item_exist("set_gestures_enabled"):
+            dpg.set_value("set_gestures_enabled", s.gestures.enabled)
+        if dpg.does_item_exist("set_sensitivity_hand"):
+            dpg.set_value("set_sensitivity_hand", s.gestures.detection_confidence)
+        if dpg.does_item_exist("set_sensitivity_face"):
+            dpg.set_value("set_sensitivity_face", s.gestures.tracking_confidence)
+        if dpg.does_item_exist("set_gesture_cooldown"):
+            dpg.set_value("set_gesture_cooldown", s.gestures.gesture_cooldown)
+        if dpg.does_item_exist("set_zoom_smoothing"):
+            dpg.set_value("set_zoom_smoothing", s.zoom.smoothing)
+        if dpg.does_item_exist("set_framing_smoothing"):
+            dpg.set_value("set_framing_smoothing", s.framing.smoothing)
+        if dpg.does_item_exist("set_face_padding"):
+            dpg.set_value("set_face_padding", s.framing.face_padding)
+        if dpg.does_item_exist("set_zoom_min"):
+            dpg.set_value("set_zoom_min", s.zoom.min_zoom)
+        if dpg.does_item_exist("set_zoom_max"):
+            dpg.set_value("set_zoom_max", s.zoom.max_zoom)
 
     def _on_virtual_camera_click(self):
         self.state.virtual_camera_active = not self.state.virtual_camera_active

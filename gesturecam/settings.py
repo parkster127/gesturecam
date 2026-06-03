@@ -62,9 +62,38 @@ class GestureSettings:
     two_hand_enabled: bool = True
     detection_confidence: float = 0.5
     tracking_confidence: float = 0.5
-    show_overlay: bool = False  # Show detection landmarks
-    zoom_speed_slow: float = 0.02  # Thumbs up/down
-    zoom_speed_fast: float = 0.03  # Index pointing
+    show_overlay: bool = False
+    zoom_speed_slow: float = 0.02
+    zoom_speed_fast: float = 0.03
+    gesture_cooldown: float = 0.5
+    thumbs_up_enabled: bool = True
+    thumbs_down_enabled: bool = True
+    pinch_enabled: bool = True
+    peace_enabled: bool = True
+    wink_enabled: bool = True
+
+
+PRESET_PROFILES = {
+    "Default": {},
+    "Streaming": {
+        "camera": {"resolution": "1080p", "fps": 30},
+        "zoom": {"min_zoom": 1.0, "max_zoom": 3.0, "smoothing": 0.10},
+        "framing": {"default_mode": "face_follow", "smoothing": 0.08},
+        "gestures": {"enabled": True, "detection_confidence": 0.6},
+    },
+    "Meeting": {
+        "camera": {"resolution": "720p", "fps": 30},
+        "zoom": {"min_zoom": 1.0, "max_zoom": 2.0, "smoothing": 0.15},
+        "framing": {"default_mode": "shirt_up", "smoothing": 0.10},
+        "gestures": {"enabled": True, "detection_confidence": 0.5},
+    },
+    "Podcast": {
+        "camera": {"resolution": "1080p", "fps": 24},
+        "zoom": {"min_zoom": 1.0, "max_zoom": 2.5, "smoothing": 0.20},
+        "framing": {"default_mode": "headshot", "smoothing": 0.05},
+        "gestures": {"enabled": False},
+    },
+}
 
 
 @dataclass
@@ -164,6 +193,31 @@ class SettingsManager:
         self.settings = AppSettings()
         self.save()
         logger.info("Settings reset to defaults")
+
+    def apply_profile(self, profile_name: str) -> None:
+        """Apply a preset profile by name."""
+        if profile_name not in PRESET_PROFILES:
+            logger.warning(f"Unknown profile: {profile_name}")
+            return
+        self.settings = AppSettings()
+        overrides = PRESET_PROFILES[profile_name]
+        if "camera" in overrides:
+            for k, v in overrides["camera"].items():
+                setattr(self.settings.camera, k, v)
+        if "zoom" in overrides:
+            for k, v in overrides["zoom"].items():
+                setattr(self.settings.zoom, k, v)
+        if "framing" in overrides:
+            for k, v in overrides["framing"].items():
+                setattr(self.settings.framing, k, v)
+        if "gestures" in overrides:
+            for k, v in overrides["gestures"].items():
+                setattr(self.settings.gestures, k, v)
+        if "output" in overrides:
+            for k, v in overrides["output"].items():
+                setattr(self.settings.output, k, v)
+        self.save()
+        logger.info(f"Applied profile: {profile_name}")
 
     def _settings_to_dict(self, settings: AppSettings) -> dict:
         """Convert settings dataclass to dictionary."""
