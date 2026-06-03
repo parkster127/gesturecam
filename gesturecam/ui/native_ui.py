@@ -596,6 +596,28 @@ class NativeUI:
                         dpg.add_spacer(height=16)
                         dpg.add_separator()
                         dpg.add_spacer(height=8)
+                        dpg.add_text("Config File", color=PRIMARY)
+                        dpg.add_spacer(height=4)
+                        with dpg.group(horizontal=True):
+                            dpg.add_button(
+                                label="Export Config",
+                                callback=self._export_config,
+                                width=130,
+                                height=32,
+                            )
+                            dpg.add_text("Save to .json file", color=TEXT_MUTED)
+                        dpg.add_spacer(height=4)
+                        with dpg.group(horizontal=True):
+                            dpg.add_button(
+                                label="Import Config",
+                                callback=self._import_config,
+                                width=130,
+                                height=32,
+                            )
+                            dpg.add_text("Load from .json file", color=TEXT_MUTED)
+                        dpg.add_spacer(height=12)
+                        dpg.add_separator()
+                        dpg.add_spacer(height=8)
                         dpg.add_button(
                             label="Reset to Defaults",
                             callback=self._reset_settings,
@@ -641,6 +663,45 @@ class NativeUI:
         settings.reset()
         self._load_settings_to_ui()
         logger.info("Settings reset to defaults")
+
+    def _export_config(self):
+        import tkinter as tk
+        from tkinter import filedialog
+
+        from gesturecam.settings import get_settings
+
+        settings = get_settings()
+        root = tk.Tk()
+        root.withdraw()
+        path = filedialog.asksaveasfilename(
+            defaultextension=".json",
+            filetypes=[("JSON", "*.json")],
+            initialfile="gesturecam-config.json",
+            title="Export GestureCam Config",
+        )
+        root.destroy()
+        if path:
+            settings.export_config(path)
+            logger.info(f"Config exported to {path}")
+
+    def _import_config(self):
+        import tkinter as tk
+        from tkinter import filedialog
+
+        from gesturecam.settings import get_settings
+
+        root = tk.Tk()
+        root.withdraw()
+        path = filedialog.askopenfilename(
+            filetypes=[("JSON", "*.json")],
+            title="Import GestureCam Config",
+        )
+        root.destroy()
+        if path:
+            settings = get_settings()
+            settings.import_config(path)
+            self._load_settings_to_ui()
+            logger.info(f"Config imported from {path}")
 
     def _save_settings(self):
         from gesturecam.settings import get_settings

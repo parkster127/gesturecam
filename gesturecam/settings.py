@@ -219,6 +219,21 @@ class SettingsManager:
         self.save()
         logger.info(f"Applied profile: {profile_name}")
 
+    def export_config(self, path: str) -> None:
+        """Export current settings to a file."""
+        data = self._settings_to_dict(self.settings)
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2)
+        logger.info(f"Settings exported to {path}")
+
+    def import_config(self, path: str) -> None:
+        """Import settings from a file."""
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        self.settings = self._dict_to_settings(data)
+        self.save()
+        logger.info(f"Settings imported from {path}")
+
     def _settings_to_dict(self, settings: AppSettings) -> dict:
         """Convert settings dataclass to dictionary."""
         return {
